@@ -43,6 +43,10 @@ const OrderTable: React.FC<OrderTableProps> = ({ orders, type, id, className, ..
     return sortedData;
   }, [orders, type]);
 
+  const totalVolume = useMemo(() => {
+    return orders.reduce((acc, order) => acc + order.price * order.numberOfShares, 0);
+  }, [orders]);
+
   const table = useReactTable({
     data: displayData,
     columns,
@@ -62,8 +66,8 @@ const OrderTable: React.FC<OrderTableProps> = ({ orders, type, id, className, ..
   }, [type, displayData]);
 
   return (
-    <div className={clsx("w-full text-sm shadow-md rounded-lg p-3", className)} {...props}>
-      <div className={clsx("flex w-full px-2 py-1 font-medium border-b", type === "bid" && "hidden")}>
+    <div className={clsx("w-full rounded-lg p-3 text-sm shadow-md", className)} {...props}>
+      <div className={clsx("flex w-full border-b px-2 py-1 font-medium", type === "bid" && "hidden")}>
         {table.getHeaderGroups().map((headerGroup) =>
           headerGroup.headers.map((header) => (
             <div key={header.id} className="flex-1 text-center">
@@ -75,26 +79,35 @@ const OrderTable: React.FC<OrderTableProps> = ({ orders, type, id, className, ..
 
       <motion.div
         ref={containerRef}
-        className={clsx("flex w-full flex-1 flex-col h-[300px] overflow-y-auto", type === "ask" && "flex-col-reverse")}
+        className={clsx("flex h-[300px] w-full flex-1 flex-col overflow-y-auto", type === "ask" && "flex-col-reverse")}
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.2 }}
       >
-        {table.getRowModel().rows.map((row) => (
-          <motion.div
-            key={row.id}
-            className={"flex w-full px-2 py-1 text-xs hover:cursor-pointer hover:bg-gray-100 transition-colors duration-150"}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.1, delay: row.index * 0.02 }}
-          >
-            {row.getVisibleCells().map((cell) => (
-              <div key={cell.id} className="flex-1">
-                {flexRender(cell.column.columnDef.cell, cell.getContext())}
-              </div>
-            ))}
-          </motion.div>
-        ))}
+        {table.getRowModel().rows.map((row) => {
+          const rowVolume = row.original.price * row.original.numberOfShares;
+          const bgWidth = (rowVolume / totalVolume) * 300; // Dominant of 30% of total volume
+          return (
+            <motion.div
+              key={row.id}
+              className={
+                "flex w-full px-2 py-1 text-xs transition-colors duration-150 hover:cursor-pointer hover:bg-gray-40"
+              }
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.1, delay: row.index * 0.02 }}
+              style={{
+                background: `linear-gradient(to left, ${type === "ask" ? "rgba(255, 0, 0, 0.1)" : "rgba(0, 255, 0, 0.1)"} ${bgWidth}%, transparent ${bgWidth}%)`,
+              }}
+            >
+              {row.getVisibleCells().map((cell) => (
+                <div key={cell.id} className="flex-1">
+                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                </div>
+              ))}
+            </motion.div>
+          );
+        })}
       </motion.div>
     </div>
   );

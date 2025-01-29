@@ -5,14 +5,20 @@ import History from "./components/History";
 
 const Home: React.FC = () => {
   return (
-    <div className="flex gap-4">
-      <div className="flex w-2/3 flex-col gap-4">
-        <Chart className="" />
-        <History className="" />
-      </div>
-      <div className="flex w-1/3 min-w-[220px] max-w-[420px] flex-col gap-4">
-        <Orderbook className="" />
-        <OrderForm className="" />
+    <div className="grid grid-cols-1 gap-4">
+      {/* Main content area */}
+      <div className="grid gap-4 sm:grid-cols-1 lg:grid-cols-[1fr_minmax(220px,360px)]">
+        {/* Left column */}
+        <div className="grid grid-rows-[2fr_1fr] gap-4">
+          <Chart className="min-h-[400px]" />
+          <History className="min-h-[200px]" />
+        </div>
+
+        {/* Right column */}
+        <div className="grid grid-rows-[2fr_1fr] gap-4">
+          <Orderbook className="min-h-[400px]" />
+          <OrderForm className="min-h-[200px]" />
+        </div>
       </div>
     </div>
   );

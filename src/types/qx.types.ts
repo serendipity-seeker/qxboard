@@ -13,4 +13,10 @@ interface OwnedAsset {
   };
 }
 
-export type { Order, OwnedAsset };
+interface IFees {
+  assetIssuanceFee: number;
+  transferFee: number;
+  tradeFee: number;
+}
+
+export type { Order, OwnedAsset, IFees };

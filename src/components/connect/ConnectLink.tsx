@@ -1,9 +1,8 @@
-import lock from "../../assets/lock.svg";
-import unlocked from "../../assets/unlocked.svg";
+import { MdLock, MdLockOpen } from "react-icons/md";
 import ConnectModal from "./ConnectModal";
 import { useQubicConnect } from "./QubicConnectContext";
 
-const ConnectLink: React.FC = () => {
+const ConnectLink: React.FC<{ darkMode?: boolean }> = ({ darkMode }) => {
   const { connected, showConnectModal, toggleConnectModal } = useQubicConnect();
 
   return (
@@ -11,17 +10,17 @@ const ConnectLink: React.FC = () => {
       <div className="flex cursor-pointer items-center justify-center gap-[10px]" onClick={() => toggleConnectModal()}>
         {connected ? (
           <>
-            <span className="mt-[5px] font-space text-[16px] font-[500] text-gray-50">Connected</span>
-            <img src={lock} alt="locked lock icon" />
+            <span className="mt-[5px] font-space text-[16px] font-[500] text-foreground">Connected</span>
+            <MdLock className="h-5 w-5 text-gray-50" />
           </>
         ) : (
           <>
-            <span className="mt-[5px] font-space text-[16px] font-[500] text-gray-50">Connect Wallet</span>
-            <img src={unlocked} alt="unlocked lock icon" />
+            <span className="mt-[5px] font-space text-[16px] font-[500] text-foreground">Connect Wallet</span>
+            <MdLockOpen className="h-5 w-5 text-gray-50" />
           </>
         )}
       </div>
-      <ConnectModal open={showConnectModal} onClose={() => toggleConnectModal()} />
+      <ConnectModal open={showConnectModal} onClose={() => toggleConnectModal()} darkMode={darkMode} />
     </>
   );
 };

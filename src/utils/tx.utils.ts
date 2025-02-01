@@ -58,8 +58,8 @@ export const decodeUint8ArrayTx = (tx: Uint8Array) => {
 };
 
 interface ICreatePayload {
-  data: number;
-  type: "uint8" | "uint16" | "uint32" | "bigint64";
+  data: number | Uint8Array;
+  type: "uint8" | "uint16" | "uint32" | "bigint64" | "id";
 }
 
 export const createPayload = (data: ICreatePayload[]) => {
@@ -68,9 +68,11 @@ export const createPayload = (data: ICreatePayload[]) => {
     uint16: 2,
     uint32: 4,
     bigint64: 8,
+    id: 32,
   };
 
   const totalSize = data.reduce((acc, { type }) => acc + TYPE_SIZES[type], 0);
+  const dynamicPayload = new DynamicPayload(totalSize);
 
   const { buffer, view } = createDataView(totalSize);
 
@@ -92,13 +94,27 @@ export const createPayload = (data: ICreatePayload[]) => {
       v.setBigUint64(o, BigInt(d), true);
       return 8;
     },
+    id: (v: DataView, o: number, d: Uint8Array) => {
+      const bytes = new Uint8Array(d);
+      for (let i = 0; i < 32; i++) {
+        v.setUint8(o + i, bytes[i] || 0);
+      }
+      return 32;
+    },
   };
 
   data.forEach(({ type, data: value }) => {
-    offset += setters[type](view, offset, value);
+    if (type === 'id') {
+      offset += setters[type](view, offset, value as Uint8Array);
+    } else {
+      offset += setters[type](view, offset, value as number);
+    }
   });
 
-  return new Uint8Array(buffer);
+  const result = new Uint8Array(buffer);
+  dynamicPayload.setPayload(result);
+
+  return dynamicPayload;
 };
 
 export const generateSeed = (): string => {

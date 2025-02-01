@@ -6,7 +6,8 @@ import { Long } from "@qubic-lib/qubic-ts-library/dist/qubic-types/Long";
 import { valueOfAssetName } from "@/utils/base.utils";
 import { fetchQuerySC } from "./rpc.service";
 import { IFees } from "@/types/qx.types";
-import { base64ToUint8Array } from "@/utils/tx.utils";
+import { base64ToUint8Array, createPayload } from "@/utils/tx.utils";
+import { createSCTx } from "./tx.service";
 
 export const createQXOrderTx = async (
   senderId: string,
@@ -77,3 +78,56 @@ export const getFees = async (): Promise<IFees> => {
     tradeFee: getValue(8),
   };
 };
+
+interface IssueAssetPayload {
+  assetName: number;
+  numberOfShares: number;
+  unitOfMeasurement: number;
+  numberOfDecimalPlaces: number;
+}
+
+export const issueAsset = async (sourceID: string, amount: number, tick: number, data: IssueAssetPayload) => {
+  const payload = createPayload([
+    { data: data.assetName, type: "bigint64" },
+    { data: data.numberOfShares, type: "bigint64" },
+    { data: data.unitOfMeasurement, type: "bigint64" },
+    { data: data.numberOfDecimalPlaces, type: "uint8" },
+  ]);
+
+  return await createSCTx(sourceID, 1, 1, payload.getPackageSize(), amount, tick, payload);
+};
+
+interface TransferShareOwnershipAndPossessionPayload {
+  issuer: Uint8Array;
+  newOwnerAndPossessor: Uint8Array;
+  assetName: number;
+  numberOfShares: number;
+}
+
+export const transferShareOwnershipAndPossession = async (sourceID: string, amount: number, tick: number, data: TransferShareOwnershipAndPossessionPayload) => {
+  const payload = createPayload([
+    { data: data.issuer, type: "id" },
+    { data: data.newOwnerAndPossessor, type: "id" },
+    { data: data.assetName, type: "bigint64" },
+    { data: data.numberOfShares, type: "bigint64" },
+  ]);
+
+  return await createSCTx(sourceID, 1, 2, payload.getPackageSize(), amount, tick, payload);
+}
+
+interface TransferShareManagementRightsPayload {
+  issuer: Uint8Array;
+  assetName: number;
+  numberOfShares: number;
+  newManagingContractIndex: number;
+}
+
+export const transferShareManagementRights = async (sourceID: string, amount: number, tick: number, data: TransferShareManagementRightsPayload) => {
+  const payload = createPayload([
+    { data: data.issuer, type: "id" },
+    { data: data.assetName, type: "bigint64" },
+    { data: data.numberOfShares, type: "bigint64" },
+    { data: data.newManagingContractIndex, type: "uint32" },
+  ]);
+  return await createSCTx(sourceID, 1, 9, payload.getPackageSize(), amount, tick, payload);
+}

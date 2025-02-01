@@ -5,12 +5,7 @@ import { QubicHelper } from "@qubic-lib/qubic-ts-library/dist/qubicHelper";
 
 const qHelper = new QubicHelper();
 
-export const createTx = (
-  sender: string,
-  receiver: string,
-  amount: number,
-  tick: number,
-) => {
+export const createTx = (sender: string, receiver: string, amount: number, tick: number) => {
   const tx = new QubicTransaction()
     .setSourcePublicKey(sender)
     .setDestinationPublicKey(receiver)
@@ -29,9 +24,7 @@ export const createSCTx = async (
   payload?: DynamicPayload,
 ) => {
   try {
-    const destinationPublicKey = new Uint8Array(
-      QubicDefinitions.PUBLIC_KEY_LENGTH,
-    );
+    const destinationPublicKey = new Uint8Array(QubicDefinitions.PUBLIC_KEY_LENGTH);
     destinationPublicKey.fill(0);
     destinationPublicKey[0] = contractIndex;
 

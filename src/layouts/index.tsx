@@ -1,6 +1,7 @@
 import { Outlet } from "react-router-dom";
 import Header from "@/layouts/Header";
 import Footer from "@/layouts/Footer";
+import InfoBanner from "@/components/InfoBanner";
 
 const Layout: React.FC = () => {
   return (
@@ -8,6 +9,7 @@ const Layout: React.FC = () => {
       <Header />
       <div className="flex flex-1 pt-[80px]">
         <div className="flex-1 p-4">
+          <InfoBanner />
           <Outlet />
         </div>
       </div>

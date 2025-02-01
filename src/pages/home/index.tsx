@@ -1,29 +1,26 @@
-import { useState } from "react";
-import reactLogo from "@/assets/react.svg";
-import viteLogo from "/vite.svg";
+import OrderForm from "./components/OrderForm";
+import Orderbook from "./components/Orderbook";
+import Chart from "./components/Chart";
+import History from "./components/History";
 
 const Home: React.FC = () => {
-  const [count, setCount] = useState(0);
-
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    <div className="grid grid-cols-1 gap-4">
+      {/* Main content area */}
+      <div className="grid gap-4 sm:grid-cols-1 lg:grid-cols-[1fr_minmax(220px,360px)]">
+        {/* Left column */}
+        <div className="grid grid-rows-[2fr_1fr] gap-4">
+          <Chart className="min-h-[400px]" />
+          <History className="min-h-[200px]" />
+        </div>
+
+        {/* Right column */}
+        <div className="grid grid-rows-[2fr_1fr] gap-4">
+          <Orderbook className="min-h-[400px]" />
+          <OrderForm className="min-h-[200px]" />
+        </div>
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>count is {count}</button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">Click on the Vite and React logos to learn more</p>
-    </>
+    </div>
   );
 };
 

@@ -11,12 +11,12 @@ const ConnectLink: React.FC<{ darkMode?: boolean }> = ({ darkMode }) => {
         {connected ? (
           <>
             <span className="mt-[5px] font-space text-[16px] font-[500] text-foreground">Connected</span>
-            <MdLock className="h-5 w-5 text-gray-50" />
+            <MdLock className="h-5 w-5" />
           </>
         ) : (
           <>
             <span className="mt-[5px] font-space text-[16px] font-[500] text-foreground">Connect Wallet</span>
-            <MdLockOpen className="h-5 w-5 text-gray-50" />
+            <MdLockOpen className="h-5 w-5" />
           </>
         )}
       </div>

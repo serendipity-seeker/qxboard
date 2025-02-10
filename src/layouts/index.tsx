@@ -8,7 +8,7 @@ const Layout: React.FC = () => {
     <div className="relative flex min-h-screen flex-col">
       <Header />
       <div className="flex flex-1 pt-[80px]">
-        <div className="flex-1 p-4">
+        <div className="flex-1 px-4">
           <InfoBanner />
           <Outlet />
         </div>

@@ -1,9 +1,8 @@
 import { useEffect, useState } from "react";
-import Card from "../ui/Card";
-import Button from "../ui/Button";
-import CloseIcon from "../../assets/close.svg";
+import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { fetchTickInfo } from "@/services/rpc.service";
-
+import { MdClose } from "react-icons/md";
 interface Transaction {
   description: string;
   targetTick?: number;
@@ -73,7 +72,7 @@ const ConfirmTxModal = ({ tx, open, onClose, onConfirm, beTickOffset = 3 }: Conf
     <>
       {open && (
         <div
-          className="fixed left-0 top-0 z-50 flex h-full w-full overflow-y-auto overflow-x-hidden bg-smoke-light p-5"
+          className="bg-smoke-light fixed left-0 top-0 z-50 flex h-full w-full overflow-y-auto overflow-x-hidden p-5"
           onClick={() => onClose()}
         >
           <Card className="relative m-auto flex w-full max-w-md flex-col p-8" onClick={(e) => e.stopPropagation()}>
@@ -81,7 +80,7 @@ const ConfirmTxModal = ({ tx, open, onClose, onConfirm, beTickOffset = 3 }: Conf
               <div className="text-2xl text-white">
                 qubic <span className="text-primary-40">connect</span>
               </div>
-              <img src={CloseIcon} onClick={onClose} alt="Close Modal Icon" className="h-5 w-5 cursor-pointer" />
+              <MdClose onClick={onClose} className="h-5 w-5 cursor-pointer" />
             </div>
             <div className="mt-4 flex flex-col gap-4">
               {confirmedTx && confirmedTx.targetTick && (
@@ -107,8 +106,6 @@ const ConfirmTxModal = ({ tx, open, onClose, onConfirm, beTickOffset = 3 }: Conf
                 <>
                   <p className="text-white">{tx.description}</p>
                   <Button
-                    label="Confirm"
-                    variant="primary"
                     onClick={async () => {
                       const confirmResult = await onConfirm();
                       // check if confirmed has finished with status 200
@@ -116,10 +113,12 @@ const ConfirmTxModal = ({ tx, open, onClose, onConfirm, beTickOffset = 3 }: Conf
                       // start fetching tick and show progress bar
                       startTickFetchInterval(confirmResult);
                     }}
-                  />
+                  >
+                    Confirm
+                  </Button>
                 </>
               )}
-              <Button label="Close" onClick={() => onClose()} />
+              <Button onClick={() => onClose()}>Close</Button>
             </div>
           </Card>
         </div>

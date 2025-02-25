@@ -1,4 +1,4 @@
-import Card from "@/components/ui/Card";
+import { Card } from "@/components/ui/card";
 import clsx from "clsx";
 
 interface HistoryProps extends React.HTMLAttributes<HTMLDivElement> {}
@@ -10,4 +10,4 @@ const History: React.FC<HistoryProps> = ({ className, ...props }) => {
   );
 };
 
-export default History
+export default History;

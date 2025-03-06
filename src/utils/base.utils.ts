@@ -1,5 +1,7 @@
 import { toast } from "react-hot-toast";
 import QRCode from "qrcode";
+import { clsx, type ClassValue } from "clsx";
+import { twMerge } from "tailwind-merge";
 
 // format number input to 100,000,000 format
 export const formatQubicAmount = (amount: number, seperator = ",") => {
@@ -44,3 +46,7 @@ export const valueOfAssetName = (asset: string): bigint => {
   bytes.set(new TextEncoder().encode(asset));
   return new DataView(bytes.buffer).getBigInt64(0, true);
 };
+
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs));
+}

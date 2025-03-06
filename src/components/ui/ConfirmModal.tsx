@@ -1,6 +1,6 @@
-import Button from './Button';
-import { IoClose } from 'react-icons/io5';
-import { motion, AnimatePresence } from 'framer-motion';
+import { Button } from "@/components/ui/button";
+import { MdClose } from "react-icons/md";
+import { motion, AnimatePresence } from "framer-motion";
 
 interface ConfirmModalProps {
   open: boolean;
@@ -33,7 +33,7 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({ open, onClose, onConfirm, t
             <div className="flex flex-col gap-2">
               <div className="flex justify-between items-center">
                 <h2 className="text-foreground text-2xl">{title}</h2>
-                <IoClose onClick={onClose} className="text-foreground text-2xl cursor-pointer" />
+                <MdClose onClick={onClose} className="text-foreground text-2xl cursor-pointer" />
               </div>
               <div className="text-gray-400">{description}</div>
             </div>
@@ -45,17 +45,18 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({ open, onClose, onConfirm, t
                   onCancel?.();
                   onClose?.();
                 }}
-                label="Cancel"
-              />
+              >
+                Cancel
+              </Button>
               <Button
                 className="w-1/2"
-                variant="primary"
                 onClick={() => {
                   onConfirm?.();
                   onClose?.();
                 }}
-                label="Confirm"
-              />
+              >
+                Confirm
+              </Button>
             </div>
           </motion.div>
         </motion.div>

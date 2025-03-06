@@ -1,4 +1,4 @@
-import Card from "@/components/ui/Card";
+import { Card } from "@/components/ui/card";
 import useOrders from "@/hooks/useOrders";
 import clsx from "clsx";
 import { useEffect, useState } from "react";

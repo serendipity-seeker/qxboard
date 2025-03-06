@@ -1,6 +1,6 @@
-import Card from "@/components/ui/Card";
+import { Card } from "@/components/ui/card";
 import clsx from "clsx";
-import type { ChartOptions, DeepPartial, IChartApi, ISeriesApi, SingleValueData, SolidColor } from "lightweight-charts";
+import type { ChartOptions, DeepPartial, IChartApi, ISeriesApi, SolidColor } from "lightweight-charts";
 import { createChart } from "lightweight-charts";
 import { useEffect, useRef } from "react";
 
@@ -37,7 +37,8 @@ const Chart: React.FC<ChartProps> = ({ className, ...props }) => {
     if (!chartContainerRef.current) return;
     const chart = createChart(chartContainerRef.current, CHART_OPTIONS);
     chartRef.current = chart;
-    priceSeriesRef.current = chart.addLineSeries({
+    priceSeriesRef.current = chart.addSeries({
+      type: "Line",
       color: "#00FF00",
       lineWidth: 2,
     });

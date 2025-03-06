@@ -2,7 +2,7 @@ import { useState, useContext, useEffect } from "react";
 // @ts-ignore
 import { QubicVault } from "@qubic-lib/qubic-ts-vault-library";
 // @ts-ignore
-import Card from "../ui/Card";
+import { Card } from "@/components/ui/card";
 // @ts-ignore
 import { useQubicConnect } from "./QubicConnectContext";
 import QubicConnectLogo from "../../assets/qubic-connect.svg";
@@ -193,7 +193,7 @@ const ConnectModal = ({ open, onClose, darkMode }: { open: boolean; onClose: () 
     <>
       {open && (
         <div
-          className="fixed left-0 top-0 z-50 flex h-full w-full overflow-y-auto overflow-x-hidden bg-smoke-light p-5"
+          className="bg-smoke-light fixed left-0 top-0 z-50 flex h-full w-full overflow-y-auto overflow-x-hidden p-5"
           onClick={() => {
             setSelectedMode("none");
             onClose();
@@ -211,21 +211,21 @@ const ConnectModal = ({ open, onClose, darkMode }: { open: boolean; onClose: () 
             {selectedMode === "none" && (
               <div className="mt-4 flex flex-col gap-4">
                 {connected && (
-                  <button className="mt-4 rounded-lg bg-primary-40 p-4 text-black" onClick={() => disconnect()}>
+                  <button className="bg-primary-40 mt-4 rounded-lg p-4 text-black" onClick={() => disconnect()}>
                     Disconnect Wallet
                   </button>
                 )}
                 {!connected && (
                   <>
                     <button
-                      className="disabled:bg-gray-40 mt-4 flex items-center justify-center gap-3 rounded-lg bg-primary-40 p-2 text-black"
+                      className="disabled:bg-gray-40 bg-primary-40 mt-4 flex items-center justify-center gap-3 rounded-lg p-2 text-black"
                       onClick={() => setSelectedMode("metamask")}
                     >
                       <img src={MetaMaskLogo} alt="MetaMask Logo" className="h-8 w-8" />
                       <span className="w-32">MetaMask</span>
                     </button>
                     <button
-                      className="disabled:bg-gray-40 flex items-center justify-center gap-3 rounded-lg bg-primary-40 p-2 text-black"
+                      className="disabled:bg-gray-40 bg-primary-40 flex items-center justify-center gap-3 rounded-lg p-2 text-black"
                       onClick={() => {
                         generateURI();
                         setSelectedMode("walletconnect");
@@ -240,13 +240,13 @@ const ConnectModal = ({ open, onClose, darkMode }: { open: boolean; onClose: () 
                       <div className="flex-grow border-t border-gray-300"></div>
                     </div>
                     <button
-                      className="rounded-lg bg-primary-40 p-3 text-black"
+                      className="bg-primary-40 rounded-lg p-3 text-black"
                       onClick={() => setSelectedMode("private-seed")}
                     >
                       Private Seed
                     </button>
                     <button
-                      className="rounded-lg bg-primary-40 p-3 text-black"
+                      className="bg-primary-40 rounded-lg p-3 text-black"
                       onClick={() => setSelectedMode("vault-file")}
                     >
                       Vault File
@@ -268,12 +268,12 @@ const ConnectModal = ({ open, onClose, darkMode }: { open: boolean; onClose: () 
                 {errorMsgPrivateSeed && <p className="text-red-500">{errorMsgPrivateSeed}</p>}
                 <div className="mt-4 grid grid-cols-2 gap-4">
                   <button
-                    className="mt-4 rounded-lg bg-primary-40 p-4 text-black"
+                    className="bg-primary-40 mt-4 rounded-lg p-4 text-black"
                     onClick={() => setSelectedMode("none")}
                   >
                     Cancel
                   </button>
-                  <button className="mt-4 rounded-lg bg-primary-40 p-4 text-black" onClick={() => privateKeyConnect()}>
+                  <button className="bg-primary-40 mt-4 rounded-lg p-4 text-black" onClick={() => privateKeyConnect()}>
                     Unlock
                   </button>
                 </div>
@@ -292,12 +292,12 @@ const ConnectModal = ({ open, onClose, darkMode }: { open: boolean; onClose: () 
                 />
                 <div className="mt-4 grid grid-cols-2 gap-4">
                   <button
-                    className="mt-4 rounded-lg bg-primary-40 p-4 text-black"
+                    className="bg-primary-40 mt-4 rounded-lg p-4 text-black"
                     onClick={() => setSelectedMode("none")}
                   >
                     Cancel
                   </button>
-                  <button className="mt-4 rounded-lg bg-primary-40 p-4 text-black" onClick={() => vaultFileConnect()}>
+                  <button className="bg-primary-40 mt-4 rounded-lg p-4 text-black" onClick={() => vaultFileConnect()}>
                     Unlock
                   </button>
                 </div>
@@ -320,7 +320,7 @@ const ConnectModal = ({ open, onClose, darkMode }: { open: boolean; onClose: () 
                 </select>
                 <div className="mt-4 grid grid-cols-2 gap-4">
                   <button
-                    className="mt-4 rounded-lg bg-primary-40 p-4 text-black"
+                    className="bg-primary-40 mt-4 rounded-lg p-4 text-black"
                     onClick={() => {
                       disconnect();
                       setSelectedMode("none");
@@ -328,7 +328,7 @@ const ConnectModal = ({ open, onClose, darkMode }: { open: boolean; onClose: () 
                   >
                     Lock Wallet
                   </button>
-                  <button className="mt-4 rounded-lg bg-primary-40 p-4 text-black" onClick={() => selectAccount()}>
+                  <button className="bg-primary-40 mt-4 rounded-lg p-4 text-black" onClick={() => selectAccount()}>
                     Select Account
                   </button>
                 </div>
@@ -341,7 +341,7 @@ const ConnectModal = ({ open, onClose, darkMode }: { open: boolean; onClose: () 
                 <div className="mt-5 flex flex-col gap-2">
                   <HeaderButtons state={state} onConnectClick={() => mmSnapConnect()} />
                   <button
-                    className="rounded-lg bg-[rgba(26,222,245,0.1)] p-3 text-primary-40"
+                    className="text-primary-40 rounded-lg bg-[rgba(26,222,245,0.1)] p-3"
                     onClick={() => setSelectedMode("none")}
                   >
                     Cancel
@@ -357,12 +357,12 @@ const ConnectModal = ({ open, onClose, darkMode }: { open: boolean; onClose: () 
                   <img src={qrCode} alt="Wallet Connect QR Code" className="w-54 h-54 mx-auto" />
                   <button
                     onClick={() => window.open(`qubic-wallet://pairwc/${connectionURI}`, "_blank")}
-                    className="disabled:bg-gray-40 flex items-center justify-center gap-3 rounded-lg bg-primary-40 p-3 text-black"
+                    className="disabled:bg-gray-40 bg-primary-40 flex items-center justify-center gap-3 rounded-lg p-3 text-black"
                   >
                     Open in Qubic Wallet
                   </button>
                   <button
-                    className="rounded-lg bg-[rgba(26,222,245,0.1)] p-3 text-primary-40"
+                    className="text-primary-40 rounded-lg bg-[rgba(26,222,245,0.1)] p-3"
                     onClick={() => setSelectedMode("none")}
                   >
                     Cancel

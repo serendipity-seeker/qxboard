@@ -1,23 +1,80 @@
+import { useEffect, useRef, useState } from "react";
+import { Card } from "@/components/ui/card";
 import OrderForm from "./components/OrderForm";
 import Orderbook from "./components/Orderbook";
 import Chart from "./components/Chart";
 import History from "./components/History";
+import UserOrder from "./components/UserOrder";
+import { useAtom } from "jotai";
+import { settingsAtom } from "@/store/settings";
 
 const Home: React.FC = () => {
+  const chartContainerRef = useRef<HTMLDivElement>(null);
+  const [chartDimensions, setChartDimensions] = useState({ width: 0, height: 0 });
+  const [settings] = useAtom(settingsAtom);
+
+  useEffect(() => {
+    const updateChartDimensions = () => {
+      if (chartContainerRef.current) {
+        const { clientWidth, clientHeight } = chartContainerRef.current;
+        setChartDimensions({
+          width: clientWidth,
+          height: clientHeight,
+        });
+      }
+    };
+
+    // Initial size calculation
+    updateChartDimensions();
+
+    // Update on resize
+    const resizeObserver = new ResizeObserver(updateChartDimensions);
+    if (chartContainerRef.current) {
+      resizeObserver.observe(chartContainerRef.current);
+    }
+
+    // Also handle window resize events
+    window.addEventListener("resize", updateChartDimensions);
+
+    return () => {
+      resizeObserver.disconnect();
+      window.removeEventListener("resize", updateChartDimensions);
+    };
+  }, []);
+
   return (
-    <div className="grid grid-cols-1 gap-4">
+    <div className="container mx-auto h-full space-y-4 overflow-hidden p-4">
       {/* Main content area */}
-      <div className="grid gap-4 sm:grid-cols-1 lg:grid-cols-[1fr_minmax(220px,360px)]">
-        {/* Left column */}
-        <div className="grid grid-rows-[2fr_1fr] gap-4">
-          <Chart className="h-[700px]" />
-          <History className="min-h-[200px]" />
+      <div className="grid h-[calc(100vh-10rem)] gap-1 overflow-hidden sm:grid-cols-1 lg:grid-cols-[2fr_1fr]">
+        {/* Left column - Chart, History, User Orders */}
+        <div className="grid h-full grid-rows-[60%_20%_20%] gap-1 overflow-hidden">
+          <Card className="relative overflow-hidden p-4" ref={chartContainerRef}>
+            {chartDimensions.width > 0 && chartDimensions.height > 0 && (
+              <Chart
+                className="absolute inset-0 p-4"
+                style={{
+                  width: chartDimensions.width,
+                  height: chartDimensions.height,
+                }}
+              />
+            )}
+          </Card>
+          <Card className="overflow-auto p-4 text-xs scrollbar-thin scrollbar-thumb-gray-700 scrollbar-track-gray-100 dark:scrollbar-thumb-gray-600 dark:scrollbar-track-gray-800">
+            <History className="w-full" />
+          </Card>
+          <Card className="overflow-auto p-4 text-xs scrollbar-thin scrollbar-thumb-gray-700 scrollbar-track-gray-100 dark:scrollbar-thumb-gray-600 dark:scrollbar-track-gray-800">
+            <UserOrder className="w-full" />
+          </Card>
         </div>
 
-        {/* Right column */}
-        <div className="grid grid-rows-[2fr_1fr] gap-4">
-          <Orderbook className="h-[700px]" />
-          <OrderForm className="min-h-[200px]" />
+        {/* Right column - Orderbook, Order Form */}
+        <div className="grid h-full grid-rows-[3fr_1fr] gap-1 overflow-hidden">
+          <Card className="overflow-auto p-4 text-xs scrollbar-thin scrollbar-thumb-gray-700 scrollbar-track-gray-100 dark:scrollbar-thumb-gray-600 dark:scrollbar-track-gray-800">
+            <Orderbook className="w-full" />
+          </Card>
+          <Card className="p-4">
+            <OrderForm className="w-full" />
+          </Card>
         </div>
       </div>
     </div>

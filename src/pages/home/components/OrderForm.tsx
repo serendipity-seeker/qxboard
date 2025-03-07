@@ -1,4 +1,3 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAtom } from "jotai";
 import { actionAtom } from "@/store/action";
 import { useState } from "react";
@@ -48,11 +47,11 @@ const OrderForm: React.FC<OrderFormProps> = ({ className, ...props }) => {
   };
 
   return (
-    <Card className={cn("w-full overflow-hidden", className)} {...props}>
-      <CardHeader className="px-4 pb-0 pt-4">
-        <CardTitle className="text-lg font-medium">Place Order</CardTitle>
-      </CardHeader>
-      <CardContent className="p-4">
+    <div className={cn("w-full overflow-hidden", className)} {...props}>
+      <div className="px-4 pb-0 pt-4">
+        <h2 className="text-lg font-medium">Place Order</h2>
+      </div>
+      <div className="p-4">
         <Tabs
           defaultValue="buy"
           value={orderType}
@@ -115,8 +114,8 @@ const OrderForm: React.FC<OrderFormProps> = ({ className, ...props }) => {
             </Button>
           </form>
         </Tabs>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 };
 

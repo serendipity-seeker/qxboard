@@ -1,10 +1,10 @@
 import { Card } from "@/components/ui/card";
 import useOrders from "@/hooks/useOrders";
-import clsx from "clsx";
 import { useEffect, useState } from "react";
 import OrderTable from "./OrderTable";
 import { actionAtom } from "@/store/action";
 import { useAtom } from "jotai";
+import { cn } from "@/utils";
 
 interface OrderbookProps extends React.HTMLAttributes<HTMLDivElement> {}
 const Orderbook: React.FC<OrderbookProps> = ({ className, ...props }) => {
@@ -27,13 +27,13 @@ const Orderbook: React.FC<OrderbookProps> = ({ className, ...props }) => {
   }, [askOrders, bidOrders]);
 
   return (
-    <Card className={clsx("flex h-full w-full flex-col justify-center", className)} {...props}>
+    <div className={cn("flex h-full w-full flex-col justify-center", className)} {...props}>
       <OrderTable orders={askOrders} type="ask" id="" className="flex-1" />
       <div className="flex w-full justify-center">
         {midPrice ? Math.floor(midPrice).toLocaleString() : "Loading..."}
       </div>
       <OrderTable orders={bidOrders} type="bid" id="" className="flex-1" />
-    </Card>
+    </div>
   );
 };
 

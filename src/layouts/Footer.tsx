@@ -1,17 +1,14 @@
 import { Button } from "@/components/ui/button";
-import { settingsAtom } from "@/store/settings";
-import { useAtom } from "jotai";
 import { Github, Heart } from "lucide-react";
 import { useState } from "react";
 import packageJson from "../../package.json";
 
 const Footer: React.FC = () => {
-  const [settings] = useAtom(settingsAtom);
   const version = packageJson.version;
-  const [isSupportModalOpen, setIsSupportModalOpen] = useState(false);
+  const [, setIsSupportModalOpen] = useState(false);
 
   return (
-    <footer className="border-t border-gray-200 px-4 sm:px-6 dark:border-gray-800">
+    <footer className="border-t border-gray-200 px-4 dark:border-gray-800 sm:px-6">
       <div className="container flex flex-col items-center justify-between gap-4 py-6 md:h-16 md:flex-row md:py-0">
         <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
           <span>{packageJson.title}</span>

@@ -8,6 +8,7 @@ import type { SingleValueData, Time } from "lightweight-charts";
 import { useEffect, useState } from "react";
 import { Loader2 } from "lucide-react";
 import { Select, SelectContent, SelectValue, SelectTrigger, SelectItem } from "@/components/ui/select";
+import { settingsAtom } from "@/store/settings";
 
 type TimeFrame = "5m" | "15m" | "1h" | "4h" | "1d" | "1w";
 type ChartType = "line" | "area" | "candle";
@@ -18,11 +19,11 @@ const Chart: React.FC<ChartProps> = ({ className, ...props }) => {
   const [volumeData, setVolumeData] = useState<SingleValueData[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [timeFrame, setTimeFrame] = useState<TimeFrame>("1h");
-  const [chartType, setChartType] = useState<ChartType>("line");
+  const [, setChartType] = useState<ChartType>("line");
   const [action, setAction] = useAtom(actionAtom);
   const [assets] = useAtom(assetsAtom);
-  const [theme, setTheme] = useState<"dark" | "light">("dark");
   const [selectedAsset, setSelectedAsset] = useState(0);
+  const [settings] = useAtom(settingsAtom);
 
   const asset = assets.find((asset) => asset.name === action.curPair);
   const symbol = asset?.name || "QX";
@@ -96,7 +97,7 @@ const Chart: React.FC<ChartProps> = ({ className, ...props }) => {
         loading={loading}
         showControls={false}
         showTooltip={true}
-        theme={theme}
+        theme={settings.darkMode ? "dark" : "light"}
         HeaderComponent={
           <div className="flex w-36 items-center gap-2">
             <Select onValueChange={handleAssetChange} value={selectedAsset.toString()}>

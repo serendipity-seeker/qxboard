@@ -14,7 +14,7 @@ const UserOrder: React.FC<UserOrderProps> = ({ ...props }) => {
   const [askOrders, setAskOrders] = useState<EntityOrder[]>([]);
   const [bidOrders, setBidOrders] = useState<EntityOrder[]>([]);
   const [loading, setLoading] = useState(true);
-  const [action, setAction] = useAtom(actionAtom);
+  const [, setAction] = useAtom(actionAtom);
   const { wallet } = useQubicConnect();
 
   const entityId = wallet?.publicKey || "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFXIB";

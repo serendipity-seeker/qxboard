@@ -5,13 +5,10 @@ import Orderbook from "./components/Orderbook";
 import Chart from "./components/Chart";
 import History from "./components/History";
 import UserOrder from "./components/UserOrder";
-import { useAtom } from "jotai";
-import { settingsAtom } from "@/store/settings";
 
 const Home: React.FC = () => {
   const chartContainerRef = useRef<HTMLDivElement>(null);
   const [chartDimensions, setChartDimensions] = useState({ width: 0, height: 0 });
-  const [settings] = useAtom(settingsAtom);
 
   useEffect(() => {
     const updateChartDimensions = () => {

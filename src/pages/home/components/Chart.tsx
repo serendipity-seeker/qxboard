@@ -1,4 +1,4 @@
-import { Card } from "@/components/ui/card";
+import { Card } from "@/components/ui/Card";
 import clsx from "clsx";
 import type { ChartOptions, DeepPartial, IChartApi, ISeriesApi, SolidColor, Time } from "lightweight-charts";
 import { CandlestickSeries, createChart, HistogramSeries } from "lightweight-charts";

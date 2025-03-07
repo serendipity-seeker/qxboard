@@ -35,7 +35,7 @@ const Chart: React.FC<ChartProps> = ({ className, ...props }) => {
 
   return (
     <div className={cn("w-full", className)} {...props}>
-      <LightweightChart priceDataSeries={priceData} volumeDataSeries={volumeData} className="w-[100vw]" />
+      <LightweightChart priceDataSeries={priceData} volumeDataSeries={volumeData} className="" />
     </div>
   );
 };

@@ -42,11 +42,16 @@ export default function LightweightChart({ priceDataSeries, volumeDataSeries, cl
     if (!chartContainerRef.current) return;
 
     const container = chartContainerRef.current;
+    const parentElement = container.parentElement;
+
+    // Get parent dimensions
+    const width = parentElement?.offsetWidth || container.offsetWidth;
+    const height = parentElement?.offsetHeight || container.offsetHeight;
 
     const chart = createChart(container, {
       ...CHART_OPTIONS,
-      width: container.offsetWidth,
-      height: container.offsetHeight,
+      width,
+      height,
     });
     chartRef.current = chart;
 
@@ -80,15 +85,18 @@ export default function LightweightChart({ priceDataSeries, volumeDataSeries, cl
     chart.timeScale().fitContent();
 
     // Use ResizeObserver for responsiveness
-    const resizeObserver = new ResizeObserver((entries) => {
-      entries.forEach((entry) => {
-        if (chartRef.current && entry.contentRect) {
-          chartRef.current.resize(entry.contentRect.width, entry.contentRect.height);
-        }
-      });
+    const resizeObserver = new ResizeObserver(() => {
+      if (chartRef.current && parentElement) {
+        const newWidth = parentElement.offsetWidth;
+        const newHeight = parentElement.offsetHeight;
+        chartRef.current.resize(newWidth, newHeight);
+        chartRef.current.timeScale().fitContent();
+      }
     });
 
-    resizeObserver.observe(container);
+    if (parentElement) {
+      resizeObserver.observe(parentElement);
+    }
 
     // eslint-disable-next-line consistent-return -- Cleanup
     return () => {
@@ -118,7 +126,8 @@ export default function LightweightChart({ priceDataSeries, volumeDataSeries, cl
   return (
     <div
       ref={chartContainerRef}
-      className={cn("border-1 border-primary-60 bg-primary-70 h-full min-h-[250px] w-[85vw] max-w-4xl", className)}
+      className={cn("h-full w-full", className)}
+      style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0 }}
     />
   );
 }

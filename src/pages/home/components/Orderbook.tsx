@@ -1,4 +1,3 @@
-import { Card } from "@/components/ui/card";
 import useOrders from "@/hooks/useOrders";
 import { useEffect, useState } from "react";
 import OrderTable from "./OrderTable";

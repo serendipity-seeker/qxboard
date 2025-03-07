@@ -20,6 +20,7 @@ type Props = Readonly<{
   showControls?: boolean;
   showTooltip?: boolean;
   theme?: "dark" | "light";
+  HeaderComponent?: React.ReactElement;
 }>;
 
 // Create the chart instance
@@ -99,6 +100,7 @@ export default function LightweightChart({
   showControls = true,
   showTooltip = true,
   theme = "dark",
+  HeaderComponent,
 }: Props) {
   const chartContainerRef = useRef<HTMLDivElement | null>(null);
   const chartRef = useRef<IChartApi | null>(null);
@@ -264,6 +266,8 @@ export default function LightweightChart({
           </div>
           <p className="text-sm text-gray-500">{title}</p>
         </div>
+
+        <div className="flex items-center gap-2">{HeaderComponent ? HeaderComponent : null}</div>
 
         {showControls && (
           <div className="flex gap-2">

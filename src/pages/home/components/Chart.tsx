@@ -7,6 +7,7 @@ import { useAtom } from "jotai";
 import type { SingleValueData, Time } from "lightweight-charts";
 import { useEffect, useState } from "react";
 import { Loader2 } from "lucide-react";
+import { Select, SelectContent, SelectValue, SelectTrigger, SelectItem } from "@/components/ui/select";
 
 type TimeFrame = "5m" | "15m" | "1h" | "4h" | "1d" | "1w";
 type ChartType = "line" | "area" | "candle";
@@ -18,9 +19,10 @@ const Chart: React.FC<ChartProps> = ({ className, ...props }) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [timeFrame, setTimeFrame] = useState<TimeFrame>("1h");
   const [chartType, setChartType] = useState<ChartType>("line");
-  const [action] = useAtom(actionAtom);
+  const [action, setAction] = useAtom(actionAtom);
   const [assets] = useAtom(assetsAtom);
   const [theme, setTheme] = useState<"dark" | "light">("dark");
+  const [selectedAsset, setSelectedAsset] = useState(0);
 
   const asset = assets.find((asset) => asset.name === action.curPair);
   const symbol = asset?.name || "QX";
@@ -66,6 +68,15 @@ const Chart: React.FC<ChartProps> = ({ className, ...props }) => {
     setChartType(newChartType);
   };
 
+  const handleAssetChange = (value: string) => {
+    const index = parseInt(value);
+    setSelectedAsset(index);
+    setAction({
+      ...action,
+      curPair: assets[index].name,
+    });
+  };
+
   if (loading && priceData.length === 0) {
     return (
       <div className={cn("flex h-full w-full items-center justify-center", className)} {...props}>
@@ -86,6 +97,22 @@ const Chart: React.FC<ChartProps> = ({ className, ...props }) => {
         showControls={false}
         showTooltip={true}
         theme={theme}
+        HeaderComponent={
+          <div className="flex w-36 items-center gap-2">
+            <Select onValueChange={handleAssetChange} value={selectedAsset.toString()}>
+              <SelectTrigger>
+                <SelectValue placeholder="Select asset" />
+              </SelectTrigger>
+              <SelectContent>
+                {assets.map((option, index) => (
+                  <SelectItem key={option.name} value={index.toString()}>
+                    {option.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        }
         onTimeFrameChange={handleTimeFrameChange}
         onChartTypeChange={handleChartTypeChange}
       />

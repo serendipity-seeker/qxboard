@@ -1,4 +1,4 @@
-import { Order } from "@/types";
+import { EntityOrder } from "@/types";
 import clsx from "clsx";
 import { createColumnHelper, flexRender, getCoreRowModel, useReactTable } from "@tanstack/react-table";
 import { formatQubicAmount } from "@/utils";
@@ -6,13 +6,13 @@ import { useMemo, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 
 interface OrderTableProps extends React.HTMLAttributes<HTMLDivElement> {
-  orders: Order[];
+  orders: EntityOrder[];
   type: "ask" | "bid";
   id: string;
 }
 
 const OrderTable: React.FC<OrderTableProps> = ({ orders, type, id, className, ...props }) => {
-  const columnHelper = createColumnHelper<Order>();
+  const columnHelper = createColumnHelper<EntityOrder>();
   const columns = [
     columnHelper.accessor("price", {
       header: "Price",
@@ -79,7 +79,10 @@ const OrderTable: React.FC<OrderTableProps> = ({ orders, type, id, className, ..
 
       <motion.div
         ref={containerRef}
-        className={clsx("flex h-[300px] w-full flex-1 flex-col overflow-y-hidden", type === "ask" && "flex-col-reverse")}
+        className={clsx(
+          "flex h-[300px] w-full flex-1 flex-col overflow-y-hidden",
+          type === "ask" && "flex-col-reverse",
+        )}
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.2 }}
@@ -91,7 +94,7 @@ const OrderTable: React.FC<OrderTableProps> = ({ orders, type, id, className, ..
             <motion.div
               key={row.id}
               className={
-                "flex w-full px-2 py-1 text-xs transition-colors duration-150 hover:cursor-pointer hover:bg-gray-40"
+                "hover:bg-gray-40 flex w-full px-2 text-xs transition-colors duration-150 hover:cursor-pointer"
               }
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}

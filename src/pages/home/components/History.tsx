@@ -41,7 +41,7 @@ const History: React.FC<HistoryProps> = ({ className, ...props }) => {
   return (
     <div className={cn("w-full", className)} {...props}>
       <div className="max-h-[400px] text-xs">
-        <h3 className="mb-4 text-lg font-semibold">Recent Trades</h3>
+        {/* <h3 className="mb-4 text-lg font-semibold">Recent Trades</h3> */}
         {loading ? (
           <div className="flex justify-center py-4">Loading...</div>
         ) : trades.length === 0 ? (

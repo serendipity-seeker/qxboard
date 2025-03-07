@@ -47,7 +47,7 @@ const OrderForm: React.FC<OrderFormProps> = ({ className, ...props }) => {
   };
 
   return (
-    <div className={cn("w-full overflow-hidden", className)} {...props}>
+    <div className={cn("w-full", className)} {...props}>
       <div className="px-2 pb-0 pt-2">
         <h2 className="text-lg font-medium">Place Order</h2>
       </div>
@@ -58,17 +58,23 @@ const OrderForm: React.FC<OrderFormProps> = ({ className, ...props }) => {
           onValueChange={(value: string) => setOrderType(value as "buy" | "sell")}
           className="w-full"
         >
-          <TabsList className="mb-4 grid w-full grid-cols-2">
-            <TabsTrigger value="buy" className={cn("bg-secondary data-[state=active]:bg-success-40 data-[state=active]:text-white")}>
+          <TabsList className="mb-2 grid w-full grid-cols-2">
+            <TabsTrigger
+              value="buy"
+              className={cn("bg-secondary data-[state=active]:bg-success-40 data-[state=active]:text-white")}
+            >
               Buy
             </TabsTrigger>
-            <TabsTrigger value="sell" className={cn("bg-secondary data-[state=active]:bg-error-40 data-[state=active]:text-white")}>
+            <TabsTrigger
+              value="sell"
+              className={cn("bg-secondary data-[state=active]:bg-error-40 data-[state=active]:text-white")}
+            >
               Sell
             </TabsTrigger>
           </TabsList>
 
-          <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
-            <div className="space-y-2">
+          <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-2">
+            <div>
               <Label htmlFor="price">Price</Label>
               <Input
                 id="price"
@@ -81,7 +87,7 @@ const OrderForm: React.FC<OrderFormProps> = ({ className, ...props }) => {
               {errors.price && <p className="text-sm text-error-40">Price is required</p>}
             </div>
 
-            <div className="space-y-2">
+            <div>
               <Label htmlFor="quantity">Quantity</Label>
               <Input
                 id="quantity"
@@ -94,7 +100,7 @@ const OrderForm: React.FC<OrderFormProps> = ({ className, ...props }) => {
               {errors.quantity && <p className="text-sm text-error-40">Quantity is required</p>}
             </div>
 
-            <Separator className="my-2" />
+            <Separator className="my-1" />
 
             <div className="flex items-center justify-between rounded-lg bg-muted p-3 text-sm">
               <span className="text-muted-foreground">Total</span>

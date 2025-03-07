@@ -114,7 +114,7 @@ const UserOrder: React.FC<UserOrderProps> = ({ ...props }) => {
   return (
     <div {...props}>
       <div className="px-4 pb-0 pt-4">
-        <h2 className="text-lg font-medium">Your Orders</h2>
+        {/* <h2 className="text-lg font-medium">Your Orders</h2> */}
       </div>
       <div className="p-4">{renderOrders()}</div>
     </div>

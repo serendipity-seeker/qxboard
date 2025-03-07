@@ -1,18 +1,34 @@
-import useOrders from "@/hooks/useOrders";
 import { useEffect, useState } from "react";
 import OrderTable from "./OrderTable";
 import { actionAtom } from "@/store/action";
 import { useAtom } from "jotai";
 import { cn } from "@/utils";
+import { EntityOrder } from "@/types";
+import { fetchAssetOrders } from "@/services/rpc.service";
+import { ISSUER } from "@/constants";
 
 interface OrderbookProps extends React.HTMLAttributes<HTMLDivElement> {}
 const Orderbook: React.FC<OrderbookProps> = ({ className, ...props }) => {
-  const { askOrders, bidOrders, fetchOrders } = useOrders();
+  const [askOrders, setAskOrders] = useState<EntityOrder[]>([]);
+  const [bidOrders, setBidOrders] = useState<EntityOrder[]>([]);
   const [midPrice, setMidPrice] = useState<number | null>(null);
   const [action] = useAtom(actionAtom);
 
   useEffect(() => {
-    fetchOrders(action.curPair || "QCAP");
+    const fetchOrders = async () => {
+      try {
+        const [askData, bidData] = await Promise.all([
+          fetchAssetOrders(action.curPair || "QCAP", ISSUER.get(action.curPair || "QCAP") || "", "Ask", 0),
+          fetchAssetOrders(action.curPair || "QCAP", ISSUER.get(action.curPair || "QCAP") || "", "Bid", 0),
+        ]);
+        setAskOrders(askData.orders || []);
+        setBidOrders(bidData.orders || []);
+      } catch (error) {
+        console.error("Failed to fetch orders:", error);
+      }
+    };
+
+    fetchOrders();
   }, [action]);
 
   useEffect(() => {

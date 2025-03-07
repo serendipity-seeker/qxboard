@@ -1,8 +1,8 @@
 import { Card } from "@/components/ui/card";
 import clsx from "clsx";
-import type { ChartOptions, DeepPartial, IChartApi, ISeriesApi, SolidColor } from "lightweight-charts";
-import { createChart } from "lightweight-charts";
-import { useEffect, useRef } from "react";
+import type { ChartOptions, DeepPartial, IChartApi, ISeriesApi, SolidColor, Time } from "lightweight-charts";
+import { CandlestickSeries, createChart, HistogramSeries } from "lightweight-charts";
+import { useEffect, useRef, useState } from "react";
 
 const CHART_OPTIONS: DeepPartial<ChartOptions> = {
   layout: {
@@ -24,33 +24,117 @@ const CHART_OPTIONS: DeepPartial<ChartOptions> = {
       visible: true,
     },
   },
+  timeScale: {
+    borderVisible: false,
+    timeVisible: true,
+    secondsVisible: false,
+  },
+};
+
+// Mock data for the chart
+const generateMockData = () => {
+  const now = new Date();
+  const candleData = [];
+  const volumes = [];
+
+  let price = 100;
+
+  for (let i = 0; i < 100; i++) {
+    const time = new Date(now);
+    time.setDate(now.getDate() - 100 + i);
+
+    // Random price movement
+    const change = (Math.random() - 0.5) * 5;
+    price += change;
+    price = Math.max(50, price); // Ensure price doesn't go too low
+
+    const open = price;
+    const high = price + Math.random() * 3;
+    const low = price - Math.random() * 3;
+    const close = price + (Math.random() - 0.5) * 2;
+
+    candleData.push({
+      time: (time.getTime() / 1000) as unknown as Time,
+      open,
+      high,
+      low,
+      close,
+    });
+
+    // Random volume
+    volumes.push({
+      time: (time.getTime() / 1000) as unknown as Time,
+      value: Math.random() * 10000,
+      color: close >= open ? "rgba(0, 150, 136, 0.5)" : "rgba(255, 82, 82, 0.5)",
+    });
+  }
+
+  return { candleData, volumeData: volumes };
 };
 
 interface ChartProps extends React.HTMLAttributes<HTMLDivElement> {}
 const Chart: React.FC<ChartProps> = ({ className, ...props }) => {
   const chartContainerRef = useRef<HTMLDivElement | null>(null);
   const chartRef = useRef<IChartApi | null>(null);
-  const priceSeriesRef = useRef<ISeriesApi<"Line"> | null>(null);
+  const candleSeriesRef = useRef<ISeriesApi<"Candlestick"> | null>(null);
   const volumeSeriesRef = useRef<ISeriesApi<"Histogram"> | null>(null);
+  const [mockData] = useState(generateMockData());
 
   useEffect(() => {
     if (!chartContainerRef.current) return;
-    const chart = createChart(chartContainerRef.current, CHART_OPTIONS);
-    chartRef.current = chart;
-    priceSeriesRef.current = chart.addSeries({
-      type: "Line",
-      color: "#00FF00",
-      lineWidth: 2,
+
+    const handleResize = () => {
+      if (chartRef.current) {
+        chartRef.current.applyOptions({
+          width: chartContainerRef.current?.clientWidth || 600,
+          height: chartContainerRef.current?.clientHeight || 400,
+        });
+      }
+    };
+
+    const chart = createChart(chartContainerRef.current, {
+      ...CHART_OPTIONS,
+      width: chartContainerRef.current.clientWidth,
+      height: chartContainerRef.current.clientHeight,
     });
-  }, []);
+
+    chartRef.current = chart;
+
+    // Add candlestick series
+    candleSeriesRef.current = chart.addSeries(CandlestickSeries, {
+      upColor: "#26a69a",
+      downColor: "#ef5350",
+      borderVisible: false,
+      wickUpColor: "#26a69a",
+      wickDownColor: "#ef5350",
+    });
+
+    // Add volume series
+    volumeSeriesRef.current = chart.addSeries(HistogramSeries, {
+      color: "#26A69A",
+    });
+
+    // Set data
+    if (candleSeriesRef.current && volumeSeriesRef.current) {
+      candleSeriesRef.current.setData(mockData.candleData);
+      volumeSeriesRef.current.setData(mockData.volumeData);
+
+      // Fit content
+      chart.timeScale().fitContent();
+    }
+
+    // Handle resize
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+      chart.remove();
+    };
+  }, [mockData]);
 
   return (
     <Card className={clsx("w-full", className)} {...props}>
-      <div></div>
-      {/* <div
-        ref={chartContainerRef}
-        className="border-1 h-full min-h-[250px] w-full max-w-2xl rounded-lg"
-      ></div> */}
+      <div ref={chartContainerRef} className="h-[500px] w-full"></div>
     </Card>
   );
 };

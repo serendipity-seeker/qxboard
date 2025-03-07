@@ -11,13 +11,13 @@ const Home: React.FC = () => {
         {/* Left column */}
         <div className="grid grid-rows-[2fr_1fr] gap-4">
           <Chart className="min-h-[400px]" />
-          <History className="min-h-[200px]" />
+          <History className="" />
         </div>
 
         {/* Right column */}
         <div className="grid grid-rows-[2fr_1fr] gap-4">
           <Orderbook className="min-h-[400px]" />
-          <OrderForm className="min-h-[200px]" />
+          <OrderForm className="" />
         </div>
       </div>
     </div>

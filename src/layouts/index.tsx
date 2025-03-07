@@ -2,8 +2,13 @@ import { Outlet } from "react-router-dom";
 import Header from "@/layouts/Header";
 import Footer from "@/layouts/Footer";
 import InfoBanner from "@/components/InfoBanner";
+import useAPIFetcher from "@/hooks/useAPIFetcher";
+import useRPCFetcher from "@/hooks/useRPCFetcher";
 
 const Layout: React.FC = () => {
+  useRPCFetcher();
+  useAPIFetcher();
+
   return (
     <div className="relative flex min-h-screen flex-col">
       <Header />

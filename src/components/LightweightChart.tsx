@@ -118,10 +118,7 @@ export default function LightweightChart({ priceDataSeries, volumeDataSeries, cl
   return (
     <div
       ref={chartContainerRef}
-      className={cn(
-        "border-1 border-primary-60 bg-primary-70 h-full min-h-[250px] w-[85vw] max-w-2xl rounded-lg p-12",
-        className,
-      )}
+      className={cn("border-1 border-primary-60 bg-primary-70 h-full min-h-[250px] w-[85vw] max-w-4xl", className)}
     />
   );
 }

@@ -1,9 +1,9 @@
-import { WalletConnectProvider } from "./components/connect/WalletConnectContext";
-import { QubicConnectProvider } from "./components/connect/QubicConnectContext";
-import { RouterProvider } from "react-router-dom";
-import { Toaster } from "react-hot-toast";
-import router from "./router";
 import { useAtom } from "jotai";
+import { Toaster } from "react-hot-toast";
+import { RouterProvider } from "react-router-dom";
+import { QubicConnectProvider } from "./components/connect/QubicConnectContext";
+import { WalletConnectProvider } from "./components/connect/WalletConnectContext";
+import router from "./router";
 import { settingsAtom } from "./store/settings";
 
 const App: React.FC = () => {

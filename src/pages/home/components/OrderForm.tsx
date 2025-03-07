@@ -59,10 +59,10 @@ const OrderForm: React.FC<OrderFormProps> = ({ className, ...props }) => {
           className="w-full"
         >
           <TabsList className="mb-4 grid w-full grid-cols-2">
-            <TabsTrigger value="buy" className={cn("data-[state=active]:bg-success-40 data-[state=active]:text-white")}>
-              Button
+            <TabsTrigger value="buy" className={cn("bg-secondary data-[state=active]:bg-success-40 data-[state=active]:text-white")}>
+              Buy
             </TabsTrigger>
-            <TabsTrigger value="sell" className={cn("data-[state=active]:bg-error-40 data-[state=active]:text-white")}>
+            <TabsTrigger value="sell" className={cn("bg-secondary data-[state=active]:bg-error-40 data-[state=active]:text-white")}>
               Sell
             </TabsTrigger>
           </TabsList>
@@ -73,7 +73,7 @@ const OrderForm: React.FC<OrderFormProps> = ({ className, ...props }) => {
               <Input
                 id="price"
                 type="number"
-                placeholder="0.00"
+                placeholder="200"
                 step="any"
                 {...register("price", { required: true, min: 0 })}
                 className={errors.price ? "border-error-40" : ""}
@@ -86,7 +86,7 @@ const OrderForm: React.FC<OrderFormProps> = ({ className, ...props }) => {
               <Input
                 id="quantity"
                 type="number"
-                placeholder="0.00"
+                placeholder="3000"
                 step="any"
                 {...register("quantity", { required: true, min: 0 })}
                 className={errors.quantity ? "border-error-40" : ""}

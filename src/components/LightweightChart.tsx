@@ -255,7 +255,7 @@ export default function LightweightChart({
   return (
     <div className={cn("relative flex h-full w-full flex-col", className)}>
       {/* Chart Header */}
-      <div className="flex items-center justify-between border-b border-gray-200 p-3 dark:border-gray-800">
+      <div className="flex items-center justify-between border-b border-gray-200 pt-0 pb-2 dark:border-gray-800">
         <div className="flex flex-col">
           <div className="flex items-center gap-2">
             <h3 className="text-lg font-semibold">{symbol}</h3>

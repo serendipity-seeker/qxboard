@@ -79,7 +79,7 @@ const OrderTable: React.FC<OrderTableProps> = ({ orders, type, id, className, ..
 
       <motion.div
         ref={containerRef}
-        className={clsx("flex h-[300px] w-full flex-1 flex-col overflow-y-auto", type === "ask" && "flex-col-reverse")}
+        className={clsx("flex h-[300px] w-full flex-1 flex-col overflow-y-hidden", type === "ask" && "flex-col-reverse")}
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.2 }}

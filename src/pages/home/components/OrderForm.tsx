@@ -1,4 +1,4 @@
-import { Card } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import clsx from "clsx";
 import { useAtom } from "jotai";
 import { actionAtom } from "@/store/action";
@@ -46,7 +46,7 @@ const OrderForm: React.FC<OrderFormProps> = ({ className, ...props }) => {
 
   return (
     <Card className={clsx("w-full", className)} {...props}>
-      <div className="flex flex-col gap-4 p-4">
+      <CardContent className="flex flex-col gap-4 p-4">
         <div className="flex gap-2">
           <Button
             className={clsx("flex-1", orderType === "buy" ? "!bg-success-40 hover:!bg-success-40/80" : "")}
@@ -95,7 +95,7 @@ const OrderForm: React.FC<OrderFormProps> = ({ className, ...props }) => {
             {orderType === "buy" ? "Buy" : "Sell"}
           </Button>
         </form>
-      </div>
+      </CardContent>
     </Card>
   );
 };

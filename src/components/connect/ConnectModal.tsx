@@ -2,12 +2,12 @@ import { useState, useContext, useEffect } from "react";
 // @ts-ignore
 import { QubicVault } from "@qubic-lib/qubic-ts-vault-library";
 // @ts-ignore
-import Card from "../ui/Card";
+import { Card } from "../ui/card";
 // @ts-ignore
+import { Button } from "../ui/button";
 import { useQubicConnect } from "./QubicConnectContext";
-import QubicConnectLogo from "../../assets/qubic-connect.svg";
-import QubicConnectLogoDark from "../../assets/qubic-connect-dark.svg";
-import CloseIcon from "../../assets/close.svg";
+import QubicConnectLogo from "@/assets/qubic-connect.svg";
+import QubicConnectLogoDark from "@/assets/qubic-connect-dark.svg";
 import { HeaderButtons } from "./Buttons";
 import { MetaMaskContext } from "./MetamaskContext.tsx";
 import { Account } from "./types";
@@ -16,6 +16,8 @@ import { useWalletConnect } from "./WalletConnectContext.tsx";
 import { generateQRCode } from "@/utils/index.ts";
 import WalletConnectLogo from "@/assets/wallet-connect.svg";
 import { motion, AnimatePresence } from "framer-motion";
+import { IoClose } from "react-icons/io5";
+import { AlertTriangle } from "lucide-react";
 
 export enum MetamaskActions {
   SetInstalled = "SetInstalled",
@@ -141,7 +143,7 @@ const ConnectModal = ({ open, onClose, darkMode }: { open: boolean; onClose: () 
                   alt="Qubic Connect Logo"
                   className="h-6"
                 />
-                <img src={CloseIcon} onClick={onClose} alt="Close Modal Icon" className="h-5 w-5 cursor-pointer" />
+                <IoClose onClick={onClose} className="h-5 w-5 cursor-pointer" />
               </motion.div>
 
               <AnimatePresence mode="wait">
@@ -154,21 +156,23 @@ const ConnectModal = ({ open, onClose, darkMode }: { open: boolean; onClose: () 
                     exit="exit"
                   >
                     {connected && (
-                      <button className="bg-primary-40 mt-4 rounded-lg p-4 text-black" onClick={() => disconnect()}>
+                      <Button variant="default" className="mt-4" onClick={() => disconnect()}>
                         Disconnect Wallet
-                      </button>
+                      </Button>
                     )}
                     {!connected && (
                       <>
-                        <button
-                          className="disabled:bg-gray-40 bg-primary-40 mt-4 flex items-center justify-center gap-3 rounded-lg p-2 text-black"
+                        <Button
+                          variant="default"
+                          className="mt-4 flex items-center justify-center gap-3"
                           onClick={() => setSelectedMode("metamask")}
                         >
                           <img src={MetaMaskLogo} alt="MetaMask Logo" className="h-8 w-8" />
                           <span className="w-32">MetaMask</span>
-                        </button>
-                        <button
-                          className="disabled:bg-gray-40 bg-primary-40 flex items-center justify-center gap-3 rounded-lg p-2 text-black"
+                        </Button>
+                        <Button
+                          variant="default"
+                          className="flex items-center justify-center gap-3"
                           onClick={() => {
                             generateURI();
                             setSelectedMode("walletconnect");
@@ -176,24 +180,20 @@ const ConnectModal = ({ open, onClose, darkMode }: { open: boolean; onClose: () 
                         >
                           <img src={WalletConnectLogo} alt="Wallet Connect Logo" className="h-8 w-8" />
                           <span className="w-32">Wallet Connect</span>
-                        </button>
-                        <div className="my-4 flex w-full items-center justify-center">
+                        </Button>
+                        <div className="my-2 flex w-full items-center justify-center">
                           <div className="flex-grow border-t border-gray-300"></div>
-                          <span className="text-red px-4">⚠️ BE CAREFUL!</span>
+                          <span className="px-4 text-red-500">
+                            <AlertTriangle className="mr-2 inline-block" /> BE CAREFUL!
+                          </span>
                           <div className="flex-grow border-t border-gray-300"></div>
                         </div>
-                        <button
-                          className="bg-primary-40 rounded-lg p-3 text-black"
-                          onClick={() => setSelectedMode("private-seed")}
-                        >
+                        <Button variant="default" onClick={() => setSelectedMode("private-seed")}>
                           Private Seed
-                        </button>
-                        <button
-                          className="bg-primary-40 rounded-lg p-3 text-black"
-                          onClick={() => setSelectedMode("vault-file")}
-                        >
+                        </Button>
+                        <Button variant="default" onClick={() => setSelectedMode("vault-file")}>
                           Vault File
-                        </button>
+                        </Button>
                       </>
                     )}
                   </motion.div>
@@ -216,14 +216,12 @@ const ConnectModal = ({ open, onClose, darkMode }: { open: boolean; onClose: () 
                     />
                     {errorMsgPrivateSeed && <p className="text-red-500">{errorMsgPrivateSeed}</p>}
                     <div className="mt-4 grid grid-cols-2 gap-4">
-                      <button
-                        className="bg-primary-40 mt-4 rounded-lg p-4 text-black"
-                        onClick={() => setSelectedMode("none")}
-                      >
+                      <Button variant="default" className="mt-4" onClick={() => setSelectedMode("none")}>
                         Cancel
-                      </button>
-                      <button
-                        className="bg-primary-40 mt-4 rounded-lg p-4 text-black"
+                      </Button>
+                      <Button
+                        variant="default"
+                        className="mt-4"
                         onClick={() => {
                           privateKeyConnect(privateSeed);
                           // reset and close
@@ -233,7 +231,7 @@ const ConnectModal = ({ open, onClose, darkMode }: { open: boolean; onClose: () 
                         }}
                       >
                         Unlock
-                      </button>
+                      </Button>
                     </div>
                   </motion.div>
                 )}
@@ -259,14 +257,12 @@ const ConnectModal = ({ open, onClose, darkMode }: { open: boolean; onClose: () 
                       onChange={handlePasswordChange}
                     />
                     <div className="mt-4 grid grid-cols-2 gap-4">
-                      <button
-                        className="bg-primary-40 mt-4 rounded-lg p-4 text-black"
-                        onClick={() => setSelectedMode("none")}
-                      >
+                      <Button variant="default" className="mt-4" onClick={() => setSelectedMode("none")}>
                         Cancel
-                      </button>
-                      <button
-                        className="bg-primary-40 mt-4 rounded-lg p-4 text-black"
+                      </Button>
+                      <Button
+                        variant="default"
+                        className="mt-4"
                         onClick={async () => {
                           if (!selectedFile) {
                             alert("Please select a file.");
@@ -278,7 +274,7 @@ const ConnectModal = ({ open, onClose, darkMode }: { open: boolean; onClose: () 
                         }}
                       >
                         Unlock
-                      </button>
+                      </Button>
                     </div>
                   </motion.div>
                 )}
@@ -304,18 +300,19 @@ const ConnectModal = ({ open, onClose, darkMode }: { open: boolean; onClose: () 
                       ))}
                     </select>
                     <div className="mt-4 grid grid-cols-2 gap-4">
-                      <button
-                        className="bg-primary-40 mt-4 rounded-lg p-4 text-black"
+                      <Button
+                        variant="default"
+                        className="mt-4"
                         onClick={() => {
                           disconnect();
                           setSelectedMode("none");
                         }}
                       >
                         Lock Wallet
-                      </button>
-                      <button className="bg-primary-40 mt-4 rounded-lg p-4 text-black" onClick={() => selectAccount()}>
+                      </Button>
+                      <Button variant="default" className="mt-4" onClick={() => selectAccount()}>
                         Select Account
-                      </button>
+                      </Button>
                     </div>
                   </motion.div>
                 )}
@@ -338,12 +335,9 @@ const ConnectModal = ({ open, onClose, darkMode }: { open: boolean; onClose: () 
                           onClose();
                         }}
                       />
-                      <button
-                        className="text-primary-40 rounded-lg bg-[rgba(26,222,245,0.1)] p-3"
-                        onClick={() => setSelectedMode("none")}
-                      >
+                      <Button variant="outline" className="text-primary-40" onClick={() => setSelectedMode("none")}>
                         Cancel
-                      </button>
+                      </Button>
                     </div>
                   </motion.div>
                 )}
@@ -365,19 +359,17 @@ const ConnectModal = ({ open, onClose, darkMode }: { open: boolean; onClose: () 
                           <div className="mx-auto h-8 w-8 animate-spin rounded-full border-t-2 border-foreground"></div>
                         )}
                       </div>
-                      <button
+                      <Button
+                        variant="default"
+                        className="flex items-center justify-center gap-3"
                         onClick={() => window.open(`qubic-wallet://pairwc/${connectionURI}`, "_blank")}
-                        className="disabled:bg-gray-40 bg-primary-40 flex items-center justify-center gap-3 rounded-lg p-3 text-black"
                         disabled={!connectionURI}
                       >
                         Open in Qubic Wallet
-                      </button>
-                      <button
-                        className="text-primary-40 rounded-lg bg-[rgba(26,222,245,0.1)] p-3"
-                        onClick={() => setSelectedMode("none")}
-                      >
+                      </Button>
+                      <Button variant="outline" className="text-primary-40" onClick={() => setSelectedMode("none")}>
                         Cancel
-                      </button>
+                      </Button>
                     </div>
                   </motion.div>
                 )}

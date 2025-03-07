@@ -1,4 +1,4 @@
-import { Card } from "@/components/ui/Card";
+import { Card, CardContent } from "@/components/ui/card";
 import clsx from "clsx";
 import type { ChartOptions, DeepPartial, IChartApi, ISeriesApi, SolidColor, Time } from "lightweight-charts";
 import { CandlestickSeries, createChart, HistogramSeries } from "lightweight-charts";
@@ -134,7 +134,7 @@ const Chart: React.FC<ChartProps> = ({ className, ...props }) => {
 
   return (
     <Card className={clsx("w-full", className)} {...props}>
-      <div ref={chartContainerRef} className="h-[500px] w-full"></div>
+      <CardContent ref={chartContainerRef} className="h-[500px] w-full"></CardContent>
     </Card>
   );
 };

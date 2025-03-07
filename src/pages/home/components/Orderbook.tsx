@@ -1,4 +1,4 @@
-import { Card } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import useOrders from "@/hooks/useOrders";
 import clsx from "clsx";
 import { useEffect, useState } from "react";
@@ -28,13 +28,13 @@ const Orderbook: React.FC<OrderbookProps> = ({ className, ...props }) => {
 
   return (
     <Card className={clsx("w-full", className)} {...props}>
-      <div className="flex h-full flex-col justify-center">
+      <CardContent className="flex h-full flex-col justify-center">
         <OrderTable orders={askOrders} type="ask" id="" className="flex-1" />
         <div className="flex w-full justify-center">
           {midPrice ? Math.floor(midPrice).toLocaleString() : "Loading..."}
         </div>
         <OrderTable orders={bidOrders} type="bid" id="" className="flex-1" />
-      </div>
+      </CardContent>
     </Card>
   );
 };

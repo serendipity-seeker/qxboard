@@ -10,7 +10,7 @@ const App: React.FC = () => {
   const [settings] = useAtom(settingsAtom);
 
   return (
-    <div className={`bg-background text-foreground font-space ${settings.darkMode ? "dark" : ""}`}>
+    <div className={`bg-background text-foreground ${settings.darkMode ? "dark" : ""}`}>
       <WalletConnectProvider>
         <QubicConnectProvider>
           <RouterProvider router={router} />

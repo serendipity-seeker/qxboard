@@ -26,7 +26,6 @@ const History: React.FC<HistoryProps> = ({ className, ...props }) => {
           asset?.name || "QX",
         );
 
-        console.log(data);
         setTrades(data);
       } catch (error) {
         console.error("Failed to fetch trades:", error);
@@ -40,7 +39,7 @@ const History: React.FC<HistoryProps> = ({ className, ...props }) => {
 
   return (
     <Card className={clsx("w-full", className)} {...props}>
-      <CardContent>
+      <CardContent className="max-h-[400px] overflow-y-auto text-xs">
         <h3 className="mb-4 text-lg font-semibold">Recent Trades</h3>
         {loading ? (
           <div className="flex justify-center py-4">Loading...</div>
@@ -50,7 +49,7 @@ const History: React.FC<HistoryProps> = ({ className, ...props }) => {
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="border-b text-xs text-gray-500">
+                <tr className="border-b text-gray-500">
                   <th className="px-2 py-2 text-left">Price</th>
                   <th className="px-2 py-2 text-left">Amount</th>
                   <th className="px-2 py-2 text-left">Time</th>
@@ -58,12 +57,12 @@ const History: React.FC<HistoryProps> = ({ className, ...props }) => {
               </thead>
               <tbody>
                 {trades.map((trade, index) => (
-                  <tr key={index} className="border-b border-gray-100 text-sm">
+                  <tr key={index} className="border-b border-gray-100">
                     <td className={clsx("px-2 py-2", trade.bid ? "text-green-500" : "text-red-500")}>
                       {trade.price.toLocaleString()}
                     </td>
                     <td className="px-2 py-2">{trade.price.toLocaleString()}</td>
-                    <td className="px-2 py-2">{new Date(trade.tickTime).toLocaleTimeString()}</td>
+                    <td className="px-2 py-2">{new Date(trade.tickTime).toLocaleString()}</td>
                   </tr>
                 ))}
               </tbody>

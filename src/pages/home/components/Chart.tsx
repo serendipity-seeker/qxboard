@@ -1,5 +1,4 @@
 import LightweightChart from "@/components/LightweightChart";
-import { Card } from "@/components/ui/card";
 import { fetchAssetChartAveragePrice } from "@/services/api.service";
 import { actionAtom } from "@/store/action";
 import { assetsAtom } from "@/store/assets";
@@ -35,9 +34,9 @@ const Chart: React.FC<ChartProps> = ({ className, ...props }) => {
   }, [action]);
 
   return (
-    <Card className={cn("w-full", className)} {...props}>
+    <div className={cn("w-full", className)} {...props}>
       <LightweightChart priceDataSeries={priceData} volumeDataSeries={volumeData} className="w-[100vw]" />
-    </Card>
+    </div>
   );
 };
 

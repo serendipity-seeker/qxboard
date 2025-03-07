@@ -20,7 +20,7 @@ const Header: React.FC = () => {
     >
       <div className="flex items-center gap-2">
         <img src={settings.darkMode ? "/logo.svg" : "/logo-dark.svg"} alt="Logo" className="h-7" />
-        <h1 className="text-xl font-bold">QXboard</h1>
+        <h1 className="text-xl font-bold">BOARD</h1>
       </div>
 
       <div className="flex items-center gap-2">

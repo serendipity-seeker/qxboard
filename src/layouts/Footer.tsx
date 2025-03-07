@@ -11,10 +11,10 @@ const Footer: React.FC = () => {
   const [isSupportModalOpen, setIsSupportModalOpen] = useState(false);
 
   return (
-    <footer className="border-t border-gray-200 px-12 dark:border-gray-800">
+    <footer className="border-t border-gray-200 px-4 sm:px-6 dark:border-gray-800">
       <div className="container flex flex-col items-center justify-between gap-4 py-6 md:h-16 md:flex-row md:py-0">
         <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
-          <span>QXBoard</span>
+          <span>{packageJson.title}</span>
           <span className="text-gray-300 dark:text-gray-600">•</span>
           <span>QX - First Qubic Exchange</span>
         </div>

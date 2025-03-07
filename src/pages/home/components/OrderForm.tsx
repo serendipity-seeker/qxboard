@@ -48,10 +48,10 @@ const OrderForm: React.FC<OrderFormProps> = ({ className, ...props }) => {
 
   return (
     <div className={cn("w-full overflow-hidden", className)} {...props}>
-      <div className="px-4 pb-0 pt-4">
+      <div className="px-2 pb-0 pt-2">
         <h2 className="text-lg font-medium">Place Order</h2>
       </div>
-      <div className="p-4">
+      <div className="p-1">
         <Tabs
           defaultValue="buy"
           value={orderType}

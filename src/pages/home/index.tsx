@@ -43,11 +43,11 @@ const Home: React.FC = () => {
   }, []);
 
   return (
-    <div className="container mx-auto h-full space-y-4 overflow-hidden p-4">
+    <div className="container mx-auto h-full space-y-4 overflow-hidden p-2">
       {/* Main content area */}
-      <div className="grid h-[calc(100vh-10rem)] gap-1 overflow-hidden sm:grid-cols-1 lg:grid-cols-[2fr_1fr]">
+      <div className="grid h-[calc(100vh-10rem)] gap-1 overflow-hidden sm:grid-cols-1 lg:grid-cols-[3fr_1fr]">
         {/* Left column - Chart, History, User Orders */}
-        <div className="grid h-full grid-rows-[60%_20%_20%] gap-1 overflow-hidden">
+        <div className="grid h-full grid-rows-[3fr_1fr_1fr] gap-1 overflow-hidden">
           <Card className="relative overflow-hidden p-4" ref={chartContainerRef}>
             {chartDimensions.width > 0 && chartDimensions.height > 0 && (
               <Chart
@@ -59,20 +59,20 @@ const Home: React.FC = () => {
               />
             )}
           </Card>
-          <Card className="overflow-auto p-4 text-xs scrollbar-thin scrollbar-thumb-gray-700 scrollbar-track-gray-100 dark:scrollbar-thumb-gray-600 dark:scrollbar-track-gray-800">
+          <Card className="overflow-auto p-2 text-xs scrollbar-thin scrollbar-thumb-gray-700 scrollbar-track-gray-100 dark:scrollbar-thumb-gray-600 dark:scrollbar-track-gray-800">
             <History className="w-full" />
           </Card>
-          <Card className="overflow-auto p-4 text-xs scrollbar-thin scrollbar-thumb-gray-700 scrollbar-track-gray-100 dark:scrollbar-thumb-gray-600 dark:scrollbar-track-gray-800">
+          <Card className="overflow-auto p-2 text-xs scrollbar-thin scrollbar-thumb-gray-700 scrollbar-track-gray-100 dark:scrollbar-thumb-gray-600 dark:scrollbar-track-gray-800">
             <UserOrder className="w-full" />
           </Card>
         </div>
 
         {/* Right column - Orderbook, Order Form */}
         <div className="grid h-full grid-rows-[3fr_1fr] gap-1 overflow-hidden">
-          <Card className="overflow-auto p-4 text-xs scrollbar-thin scrollbar-thumb-gray-700 scrollbar-track-gray-100 dark:scrollbar-thumb-gray-600 dark:scrollbar-track-gray-800">
+          <Card className="overflow-auto p-2 text-xs scrollbar-thin scrollbar-thumb-gray-700 scrollbar-track-gray-100 dark:scrollbar-thumb-gray-600 dark:scrollbar-track-gray-800">
             <Orderbook className="w-full" />
           </Card>
-          <Card className="p-4">
+          <Card className="p-2">
             <OrderForm className="w-full" />
           </Card>
         </div>

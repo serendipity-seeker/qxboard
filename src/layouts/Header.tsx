@@ -3,9 +3,11 @@ import { settingsAtom } from "@/store/settings";
 import { motion } from "framer-motion";
 import { useAtom } from "jotai";
 import { MdLightMode, MdDarkMode } from "react-icons/md";
+import packageJson from "../../package.json";
 
 const Header: React.FC = () => {
   const [settings, setSettings] = useAtom(settingsAtom);
+  const version = packageJson.version;
 
   const toggleDarkMode = () => {
     setSettings((prev) => ({ ...prev, darkMode: !prev.darkMode }));
@@ -16,11 +18,12 @@ const Header: React.FC = () => {
       initial={{ opacity: 0, y: -20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      className="fixed top-0 z-10 flex h-[56px] w-full flex-wrap items-center justify-between border-b border-solid border-card-border bg-background px-4 sm:px-10"
+      className="fixed top-0 z-10 flex h-[56px] w-full flex-wrap items-center justify-between border-b border-solid border-card-border bg-background px-4 sm:px-6"
     >
       <div className="flex items-center gap-2">
         <img src={settings.darkMode ? "/logo.svg" : "/logo-dark.svg"} alt="Logo" className="h-7" />
-        <h1 className="text-xl font-bold">BOARD</h1>
+        <h1 className="text-xl font-bold">{packageJson.title}</h1>
+        <span className="text-xs text-gray-500 dark:text-gray-400">v{version}</span>
       </div>
 
       <div className="flex items-center gap-2">

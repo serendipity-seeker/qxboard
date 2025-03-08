@@ -8,7 +8,6 @@ import { BiHistory } from "react-icons/bi";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { MdOutlineShoppingCart, MdOutlineReceiptLong } from "react-icons/md";
 import { useQubicConnect } from "@/components/connect/QubicConnectContext";
-import { settingsAtom } from "@/store/settings";
 import { useAtom } from "jotai";
 import { fetchEntityAskOrders, fetchEntityBidOrders } from "@/services/api.service";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -21,13 +20,12 @@ import SettingPanel from "./SettingPanel";
 const UserNormal: React.FC = () => {
   const [activeTab, setActiveTab] = useState("settings");
   const { wallet } = useQubicConnect();
-  const [settings, setSettings] = useAtom(settingsAtom);
   const [askOrders, setAskOrders] = useState<EntityOrder[]>([]);
   const [bidOrders, setBidOrders] = useState<EntityOrder[]>([]);
   const [loading, setLoading] = useState(true);
   const [, setAction] = useAtom(actionAtom);
 
-  const address = "MSBDGKZNPRWWFECNKUPNQVSMRFQCNRGNGETBYLVRLAOGUAJFHQJLQVLBROUL"; //wallet?.publicKey;
+  const address = wallet?.publicKey;
 
   useEffect(() => {
     const fetchOrders = async () => {

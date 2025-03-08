@@ -1,8 +1,7 @@
 import { EntityOrder } from "@/types";
-import clsx from "clsx";
 import { createColumnHelper, flexRender, getCoreRowModel, useReactTable } from "@tanstack/react-table";
-import { formatQubicAmount } from "@/utils";
-import { useMemo, useEffect, useRef, useState } from "react";
+import { cn, formatQubicAmount } from "@/utils";
+import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 
 interface OrderTableProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -58,7 +57,7 @@ const OrderTable: React.FC<OrderTableProps> = ({
     columnHelper.accessor("price", {
       header: "Price",
       cell: (info) => (
-        <div className={clsx("text-right font-semibold", type === "ask" ? "text-red-500" : "text-green-500")}>
+        <div className={cn("text-right font-semibold", type === "ask" ? "text-red-500" : "text-green-500")}>
           {formatQubicAmount(info.getValue())}
         </div>
       ),
@@ -74,13 +73,13 @@ const OrderTable: React.FC<OrderTableProps> = ({
     }),
   ];
 
-  const totalVolume = useMemo(() => {
-    return orders.reduce((acc, order) => acc + order.price * order.numberOfShares, 0);
-  }, [orders]);
+  // const totalVolume = useMemo(() => {
+  //   return orders.reduce((acc, order) => acc + order.price * order.numberOfShares, 0);
+  // }, [orders]);
 
-  const maxCumVolume = useMemo(() => {
-    return processedOrders.length > 0 ? processedOrders[processedOrders.length - 1].cumVolume : 0;
-  }, [processedOrders]);
+  // const maxCumVolume = useMemo(() => {
+  //   return processedOrders.length > 0 ? processedOrders[processedOrders.length - 1].cumVolume : 0;
+  // }, [processedOrders]);
 
   const table = useReactTable({
     data: processedOrders,
@@ -107,7 +106,7 @@ const OrderTable: React.FC<OrderTableProps> = ({
   };
 
   return (
-    <div className={clsx("flex h-full w-full flex-col rounded-lg p-2 text-sm", className)} {...props}>
+    <div className={cn("flex h-full w-full flex-col rounded-lg p-2 text-sm", className)} {...props}>
       {showHeader && (
         <div className="flex w-full border-b px-2 py-1 font-medium">
           {table.getHeaderGroups().map((headerGroup) =>
@@ -122,7 +121,7 @@ const OrderTable: React.FC<OrderTableProps> = ({
 
       <motion.div
         ref={containerRef}
-        className={clsx(
+        className={cn(
           "flex h-[calc(100%-40px)] w-full flex-1 flex-col overflow-y-auto scrollbar-thin scrollbar-track-gray-100 scrollbar-thumb-gray-700 dark:scrollbar-track-gray-800 dark:scrollbar-thumb-gray-600",
           type === "ask" && "flex-col-reverse",
         )}
@@ -131,13 +130,13 @@ const OrderTable: React.FC<OrderTableProps> = ({
         transition={{ duration: 0.2 }}
       >
         {table.getRowModel().rows.map((row) => {
-          const rowVolume = row.original.price * row.original.numberOfShares;
-          const rowData = row.original as EntityOrder & { cumVolume: number };
+          // const rowVolume = row.original.price * row.original.numberOfShares;
+          // const rowData = row.original as EntityOrder & { cumVolume: number };
 
           // Calculate background width based on either individual volume or cumulative volume
-          const bgWidth = showCumulativeVolume
-            ? (rowData.cumVolume / maxCumVolume) * 100
-            : (rowVolume / totalVolume) * 100;
+          // const bgWidth = showCumulativeVolume
+          //   ? (rowData.cumVolume / maxCumVolume) * 100
+          //   : (rowVolume / totalVolume) * 100;
 
           return (
             <motion.div

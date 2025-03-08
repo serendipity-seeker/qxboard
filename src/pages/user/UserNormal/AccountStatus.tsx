@@ -1,25 +1,25 @@
 import React, { useEffect, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
-import { useAtom } from "jotai";
-import { balancesAtom } from "@/store/balances";
-import { fetchOwnedAssets } from "@/services/rpc.service";
+import { fetchOwnedAssets, fetchBalance } from "@/services/rpc.service";
 import { Badge } from "@/components/ui/badge";
 import { FaUnlink, FaArrowDown, FaArrowUp, FaCubes, FaKey } from "react-icons/fa";
 import { MdAccountBalance } from "react-icons/md";
 import { BiCoinStack } from "react-icons/bi";
 import { RiExchangeFundsFill } from "react-icons/ri";
+import { Balance } from "@/types";
 
 interface AccountStatusProps {
   address: string;
 }
 
 const AccountStatus: React.FC<AccountStatusProps> = ({ address }) => {
-  const [balances] = useAtom(balancesAtom);
+  const [balance, setBalance] = useState<Balance>();
   const [ownedAssets, setOwnedAssets] = useState<any[]>([]);
 
   useEffect(() => {
     if (address) {
       fetchOwnedAssets(address).then((assets) => setOwnedAssets(assets));
+      fetchBalance(address).then((balance) => setBalance(balance));
     }
   }, [address]);
 
@@ -36,9 +36,9 @@ const AccountStatus: React.FC<AccountStatusProps> = ({ address }) => {
     );
   }
 
-  const qubicBalance = balances.find((b) => b.id === address)?.balance || 0;
-  const incomingTransfers = balances.find((b) => b.id === address)?.numberOfIncomingTransfers || 0;
-  const outgoingTransfers = balances.find((b) => b.id === address)?.numberOfOutgoingTransfers || 0;
+  const qubicBalance = Number(balance?.balance) || 0;
+  const incomingTransfers = Number(balance?.numberOfIncomingTransfers) || 0;
+  const outgoingTransfers = Number(balance?.numberOfOutgoingTransfers) || 0;
 
   return (
     <Card className="border-0 bg-muted shadow-sm">

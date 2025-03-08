@@ -81,11 +81,11 @@ const Home: React.FC = () => {
 
         {/* Right column - Orderbook, Order Form */}
         <div className="grid h-full grid-rows-[3fr_1fr] gap-1 overflow-hidden">
-          <Card className="scrollbar-thin scrollbar-thumb-gray-700 scrollbar-track-gray-100 dark:scrollbar-thumb-gray-600 dark:scrollbar-track-gray-800 overflow-auto p-2 text-xs">
-            <Orderbook className="w-full" />
+          <Card className="scrollbar-thin scrollbar-thumb-gray-700 scrollbar-track-gray-100 dark:scrollbar-thumb-gray-600 dark:scrollbar-track-gray-800 overflow-auto text-xs">
+            <Orderbook />
           </Card>
           <Card className="p-1">
-            <OrderForm className="w-full" />
+            <OrderForm />
           </Card>
         </div>
       </div>

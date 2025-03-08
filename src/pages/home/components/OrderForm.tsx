@@ -1,6 +1,6 @@
 import { useAtom } from "jotai";
 import { actionAtom } from "@/store/action";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { formatQubicAmount } from "@/utils";
@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/utils";
+import { currentPriceAtom } from "@/store/orderbook";
 
 interface OrderFormProps extends React.HTMLAttributes<HTMLDivElement> {}
 
@@ -28,7 +29,16 @@ const OrderForm: React.FC<OrderFormProps> = ({ className, ...props }) => {
     reset,
   } = useForm<OrderFormData>();
 
-  const price = watch("price");
+  const [currentPrice] = useAtom(currentPriceAtom);
+
+  const [price, setPrice] = useState(currentPrice || 0);
+
+  useEffect(() => {
+    if (currentPrice) {
+      setPrice(currentPrice);
+    }
+  }, [currentPrice]);
+
   const quantity = watch("quantity");
   const total = (price || 0) * (quantity || 0);
 

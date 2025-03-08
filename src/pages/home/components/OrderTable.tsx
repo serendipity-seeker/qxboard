@@ -2,17 +2,58 @@ import { EntityOrder } from "@/types";
 import clsx from "clsx";
 import { createColumnHelper, flexRender, getCoreRowModel, useReactTable } from "@tanstack/react-table";
 import { formatQubicAmount } from "@/utils";
-import { useMemo, useEffect, useRef } from "react";
+import { useMemo, useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 
 interface OrderTableProps extends React.HTMLAttributes<HTMLDivElement> {
   orders: EntityOrder[];
   type: "ask" | "bid";
   id: string;
+  onSelectPrice?: (price: number) => void;
+  maxItems?: number;
+  showCumulativeVolume?: boolean;
+  showHeader?: boolean;
 }
 
-const OrderTable: React.FC<OrderTableProps> = ({ orders, type, id, className, ...props }) => {
+const OrderTable: React.FC<OrderTableProps> = ({
+  orders,
+  type,
+  id,
+  className,
+  onSelectPrice,
+  maxItems = 15,
+  showCumulativeVolume = false,
+  showHeader = true,
+  ...props
+}) => {
   const columnHelper = createColumnHelper<EntityOrder>();
+
+  // Add cumulative volume calculation
+  const [processedOrders, setProcessedOrders] = useState<(EntityOrder & { cumVolume: number })[]>([]);
+
+  useEffect(() => {
+    const sortedData = [...orders].sort((a, b) => {
+      if (type === "ask") {
+        return a.price - b.price;
+      }
+      return b.price - a.price;
+    });
+
+    // Calculate cumulative volume
+    let cumVolume = 0;
+    const processed = sortedData.map((order) => {
+      cumVolume += order.numberOfShares;
+      return {
+        ...order,
+        cumVolume,
+      };
+    });
+
+    // Limit the number of items if maxItems is provided
+    const limitedData = maxItems > 0 ? processed.slice(0, maxItems) : processed;
+    setProcessedOrders(limitedData);
+  }, [orders, type, maxItems]);
+
   const columns = [
     columnHelper.accessor("price", {
       header: "Price",
@@ -33,22 +74,16 @@ const OrderTable: React.FC<OrderTableProps> = ({ orders, type, id, className, ..
     }),
   ];
 
-  const displayData = useMemo(() => {
-    const sortedData = [...orders].sort((a, b) => {
-      if (type === "ask") {
-        return a.price - b.price;
-      }
-      return b.price - a.price;
-    });
-    return sortedData;
-  }, [orders, type]);
-
   const totalVolume = useMemo(() => {
     return orders.reduce((acc, order) => acc + order.price * order.numberOfShares, 0);
   }, [orders]);
 
+  const maxCumVolume = useMemo(() => {
+    return processedOrders.length > 0 ? processedOrders[processedOrders.length - 1].cumVolume : 0;
+  }, [processedOrders]);
+
   const table = useReactTable({
-    data: displayData,
+    data: processedOrders,
     columns,
     getCoreRowModel: getCoreRowModel(),
   });
@@ -63,24 +98,32 @@ const OrderTable: React.FC<OrderTableProps> = ({ orders, type, id, className, ..
         containerRef.current.scrollTop = 0;
       }
     }
-  }, [type, displayData]);
+  }, [type, processedOrders]);
+
+  const handleRowClick = (price: number) => {
+    if (onSelectPrice) {
+      onSelectPrice(price);
+    }
+  };
 
   return (
-    <div className={clsx("w-full rounded-lg p-3 text-sm shadow-md", className)} {...props}>
-      <div className={clsx("flex w-full border-b px-2 py-1 font-medium", type === "bid" && "hidden")}>
-        {table.getHeaderGroups().map((headerGroup) =>
-          headerGroup.headers.map((header) => (
-            <div key={header.id} className="flex-1 text-center">
-              {flexRender(header.column.columnDef.header, header.getContext())}
-            </div>
-          )),
-        )}
-      </div>
+    <div className={clsx("flex h-full w-full flex-col rounded-lg p-2 text-sm", className)} {...props}>
+      {showHeader && (
+        <div className="flex w-full border-b px-2 py-1 font-medium">
+          {table.getHeaderGroups().map((headerGroup) =>
+            headerGroup.headers.map((header) => (
+              <div key={header.id} className="flex-1 text-center">
+                {flexRender(header.column.columnDef.header, header.getContext())}
+              </div>
+            )),
+          )}
+        </div>
+      )}
 
       <motion.div
         ref={containerRef}
         className={clsx(
-          "flex h-[300px] w-full flex-1 flex-col overflow-y-hidden",
+          "flex h-[calc(100%-40px)] w-full flex-1 flex-col overflow-y-auto scrollbar-thin scrollbar-track-gray-100 scrollbar-thumb-gray-700 dark:scrollbar-track-gray-800 dark:scrollbar-thumb-gray-600",
           type === "ask" && "flex-col-reverse",
         )}
         initial={{ opacity: 0 }}
@@ -89,19 +132,26 @@ const OrderTable: React.FC<OrderTableProps> = ({ orders, type, id, className, ..
       >
         {table.getRowModel().rows.map((row) => {
           const rowVolume = row.original.price * row.original.numberOfShares;
-          const bgWidth = (rowVolume / totalVolume) * 300; // Dominant of 30% of total volume
+          const rowData = row.original as EntityOrder & { cumVolume: number };
+
+          // Calculate background width based on either individual volume or cumulative volume
+          const bgWidth = showCumulativeVolume
+            ? (rowData.cumVolume / maxCumVolume) * 100
+            : (rowVolume / totalVolume) * 100;
+
           return (
             <motion.div
               key={row.id}
-              className={
-                "hover:bg-gray-40 flex w-full px-2 text-xs transition-colors duration-150 hover:cursor-pointer"
-              }
+              className="flex w-full px-2 text-xs transition-colors duration-150 hover:cursor-pointer hover:bg-gray-100/10"
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.1, delay: row.index * 0.02 }}
               style={{
-                background: `linear-gradient(to left, ${type === "ask" ? "rgba(255, 0, 0, 0.1)" : "rgba(0, 255, 0, 0.1)"} ${bgWidth}%, transparent ${bgWidth}%)`,
+                background: `linear-gradient(to left, ${
+                  type === "ask" ? "rgba(255, 0, 0, 0.1)" : "rgba(0, 255, 0, 0.1)"
+                } ${bgWidth}%, transparent ${bgWidth}%)`,
               }}
+              onClick={() => handleRowClick(row.original.price)}
             >
               {row.getVisibleCells().map((cell) => (
                 <div key={cell.id} className="flex-1">

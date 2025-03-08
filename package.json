@@ -1,8 +1,8 @@
 {
-  "name": "min-qx-v2",
+  "name": "qxboard",
   "title": "QXBoard",
   "private": true,
-  "version": "0.6.0",
+  "version": "0.6.1",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -12,7 +12,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/serendipity-seeker/min-qx-v2.git"
+    "url": "https://github.com/serendipity-seeker/qxboard.git"
   },
   "dependencies": {
     "@kbox-labs/react-echarts": "^1.4.2",

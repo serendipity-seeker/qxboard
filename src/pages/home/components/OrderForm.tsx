@@ -9,7 +9,6 @@ import { Label } from "@/components/ui/label";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/utils";
-import { currentPriceAtom } from "@/store/orderbook";
 
 interface OrderFormProps extends React.HTMLAttributes<HTMLDivElement> {}
 
@@ -21,26 +20,31 @@ interface OrderFormData {
 const OrderForm: React.FC<OrderFormProps> = ({ className, ...props }) => {
   const [action] = useAtom(actionAtom);
   const [orderType, setOrderType] = useState<"buy" | "sell">("buy");
+
   const {
     register,
     handleSubmit,
     watch,
+    setValue,
     formState: { errors },
     reset,
-  } = useForm<OrderFormData>();
+  } = useForm<OrderFormData>({
+    defaultValues: {
+      price: action.curPrice || 0,
+      quantity: 0,
+    },
+  });
 
-  const [currentPrice] = useAtom(currentPriceAtom);
-
-  const [price, setPrice] = useState(currentPrice || 0);
-
+  // Update form when price changes from outside
   useEffect(() => {
-    if (currentPrice) {
-      setPrice(currentPrice);
+    if (action.curPrice) {
+      setValue("price", action.curPrice);
     }
-  }, [currentPrice]);
+  }, [action.curPrice, setValue]);
 
-  const quantity = watch("quantity");
-  const total = (price || 0) * (quantity || 0);
+  const watchedPrice = watch("price");
+  const watchedQuantity = watch("quantity");
+  const total = (watchedPrice || 0) * (watchedQuantity || 0);
 
   const onSubmit = async (data: OrderFormData) => {
     try {
@@ -49,8 +53,14 @@ const OrderForm: React.FC<OrderFormProps> = ({ className, ...props }) => {
         price: data.price,
         quantity: data.quantity,
         pair: action.curPair,
+        total: data.price * data.quantity,
       });
-      reset();
+
+      // Reset form after successful submission
+      reset({
+        price: data.price, // Keep the same price for consecutive orders
+        quantity: 0,
+      });
     } catch (error) {
       console.error("Failed to submit order:", error);
     }
@@ -91,10 +101,14 @@ const OrderForm: React.FC<OrderFormProps> = ({ className, ...props }) => {
                 type="number"
                 placeholder="200"
                 step="any"
-                {...register("price", { required: true, min: 0 })}
+                {...register("price", {
+                  required: "Price is required",
+                  min: { value: 0, message: "Price must be greater than 0" },
+                  valueAsNumber: true,
+                })}
                 className={errors.price ? "border-error-40" : ""}
               />
-              {errors.price && <p className="text-sm text-error-40">Price is required</p>}
+              {errors.price && <p className="text-sm text-error-40">{errors.price.message}</p>}
             </div>
 
             <div>
@@ -104,10 +118,14 @@ const OrderForm: React.FC<OrderFormProps> = ({ className, ...props }) => {
                 type="number"
                 placeholder="3000"
                 step="any"
-                {...register("quantity", { required: true, min: 0 })}
+                {...register("quantity", {
+                  required: "Quantity is required",
+                  min: { value: 0, message: "Quantity must be greater than 0" },
+                  valueAsNumber: true,
+                })}
                 className={errors.quantity ? "border-error-40" : ""}
               />
-              {errors.quantity && <p className="text-sm text-error-40">Quantity is required</p>}
+              {errors.quantity && <p className="text-sm text-error-40">{errors.quantity.message}</p>}
             </div>
 
             <Separator className="my-1" />

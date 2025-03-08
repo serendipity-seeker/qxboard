@@ -132,14 +132,14 @@ const Orderbook: React.FC<OrderbookProps> = ({ className, ...props }) => {
   }, [askOrders, bidOrders]);
 
   const handleSelectPrice = (price: number) => {
-    setAction({ ...action, curPrice: price });
+    setAction((prev) => ({ ...prev, curPrice: price }));
   };
 
   return (
     <div className={cn("flex h-full w-full flex-col", className)} {...props}>
       <div className="flex items-center justify-between p-2 px-2">
         <h3 className="text-sm font-medium">Orderbook</h3>
-        <Button variant="ghost" size="icon" className="h-8 w-8" onClick={onOpen}>
+        <Button variant="secondary" size="icon" className="h-8 w-8" onClick={onOpen}>
           <Settings2 className="h-4 w-4" />
         </Button>
       </div>

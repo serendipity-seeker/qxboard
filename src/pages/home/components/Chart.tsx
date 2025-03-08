@@ -59,7 +59,7 @@ const Chart: React.FC<ChartProps> = ({ className, ...props }) => {
     };
 
     fetchData();
-  }, [action, asset, timeFrame, symbol]);
+  }, [asset, timeFrame, symbol]);
 
   const handleTimeFrameChange = (newTimeFrame: TimeFrame) => {
     setTimeFrame(newTimeFrame);

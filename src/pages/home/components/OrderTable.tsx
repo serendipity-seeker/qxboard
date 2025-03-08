@@ -142,16 +142,16 @@ const OrderTable: React.FC<OrderTableProps> = ({
           return (
             <motion.div
               key={row.id}
-              className="flex w-full px-2 text-xs transition-colors duration-150 hover:cursor-pointer hover:bg-gray-100/10"
+              className="flex w-full px-2 text-xs transition-colors duration-150 cursor-pointer hover:bg-muted"
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.1, delay: row.index * 0.02 }}
-              style={{
-                background: `linear-gradient(to left, ${
-                  type === "ask" ? "rgba(255, 0, 0, 0.1)" : "rgba(0, 255, 0, 0.1)"
-                } ${bgWidth}%, transparent ${bgWidth}%)`,
-              }}
-              onClick={() => handleRowClick(row.original.price)}
+              // style={{
+              //   background: `linear-gradient(to left, ${
+              //     type === "ask" ? "rgba(255, 0, 0, 0.1)" : "rgba(0, 255, 0, 0.1)"
+              //   } ${bgWidth}%, transparent ${bgWidth}%)`,
+              // }}
+              onClick={() => handleRowClick(Number(row.original.price))}
             >
               {row.getVisibleCells().map((cell) => (
                 <div key={cell.id} className="flex-1">

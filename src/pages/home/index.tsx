@@ -43,7 +43,7 @@ const Home: React.FC = () => {
   return (
     <div className="container mx-auto space-y-4 p-2">
       {/* Main content area */}
-      <div className="grid h-[100vh] gap-1 sm:grid-cols-1 lg:grid-cols-[3fr_1fr]">
+      <div className="grid h-[calc(100vh-5rem)] gap-1 sm:grid-cols-1 lg:grid-cols-[3fr_1fr]">
         {/* Left column - Chart, History, User Orders */}
         <div className="grid grid-rows-[3fr_1fr] gap-1 overflow-hidden">
           <Card className="relative overflow-hidden p-2" ref={chartContainerRef}>

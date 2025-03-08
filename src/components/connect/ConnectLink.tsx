@@ -7,16 +7,19 @@ const ConnectLink: React.FC<{ darkMode?: boolean }> = ({ darkMode }) => {
 
   return (
     <>
-      <div className="flex cursor-pointer items-center justify-center gap-[10px]" onClick={() => toggleConnectModal()}>
+      <div
+        className="flex cursor-pointer items-center justify-center gap-[10px] p-2 text-foreground hover:text-primary"
+        onClick={() => toggleConnectModal()}
+      >
         {connected ? (
           <>
             {/* <span className="mt-[5px] font-space text-[16px] font-[500] text-foreground">Connected</span> */}
-            <MdLock className="h-5 w-5" />
+            <MdLock size={20} />
           </>
         ) : (
           <>
             {/* <span className="mt-[5px] font-space text-[16px] font-[500] text-foreground">Connect Wallet</span> */}
-            <MdLockOpen className="h-5 w-5" />
+            <MdLockOpen size={20} />
           </>
         )}
       </div>

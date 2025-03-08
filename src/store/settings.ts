@@ -7,8 +7,19 @@ export type Settings = {
   notifications: boolean;
 };
 
-export const settingsAtom = atom<Settings>({
-  tickOffset: DEFAULT_TICK_OFFSET,
-  darkMode: false,
-  notifications: false,
-});
+const localStorageSettings = JSON.parse(
+  localStorage.getItem("settings") || `{"tickOffset": ${DEFAULT_TICK_OFFSET},"darkMode": true,"notifications": false}`,
+) as Settings;
+
+export const settingsAtom = atom(
+  localStorageSettings || {
+    tickOffset: DEFAULT_TICK_OFFSET,
+    darkMode: true,
+    notifications: false,
+  },
+  (get, set, update: Partial<Settings>) => {
+    const newSettings = { ...get(settingsAtom), ...update };
+    set(settingsAtom, newSettings);
+    localStorage.setItem("settings", JSON.stringify(newSettings));
+  },
+);

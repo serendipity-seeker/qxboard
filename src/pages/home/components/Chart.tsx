@@ -1,57 +1,123 @@
-import { Card } from "@/components/ui/card";
-import clsx from "clsx";
-import type { ChartOptions, DeepPartial, IChartApi, ISeriesApi, SolidColor } from "lightweight-charts";
-import { createChart } from "lightweight-charts";
-import { useEffect, useRef } from "react";
+import LightweightChart from "@/components/LightweightChart";
+import { fetchAssetChartAveragePrice } from "@/services/api.service";
+import { actionAtom } from "@/store/action";
+import { assetsAtom } from "@/store/assets";
+import { cn } from "@/utils";
+import { useAtom } from "jotai";
+import type { SingleValueData, Time } from "lightweight-charts";
+import { useEffect, useState } from "react";
+import { Loader2 } from "lucide-react";
+import { Select, SelectContent, SelectValue, SelectTrigger, SelectItem } from "@/components/ui/select";
+import { settingsAtom } from "@/store/settings";
 
-const CHART_OPTIONS: DeepPartial<ChartOptions> = {
-  layout: {
-    textColor: "#707A8A",
-    attributionLogo: false,
-    background: { type: "solid", color: "#151E27" } as SolidColor,
-  },
-  rightPriceScale: { visible: true, borderVisible: false },
-  leftPriceScale: { visible: true, borderVisible: false },
-  grid: {
-    vertLines: {
-      color: "#2B3A4A",
-      style: 1,
-      visible: true,
-    },
-    horzLines: {
-      color: "#2B3A4A",
-      style: 1,
-      visible: true,
-    },
-  },
-};
+type TimeFrame = "5m" | "15m" | "1h" | "4h" | "1d" | "1w";
+type ChartType = "line" | "area" | "candle";
 
 interface ChartProps extends React.HTMLAttributes<HTMLDivElement> {}
 const Chart: React.FC<ChartProps> = ({ className, ...props }) => {
-  const chartContainerRef = useRef<HTMLDivElement | null>(null);
-  const chartRef = useRef<IChartApi | null>(null);
-  const priceSeriesRef = useRef<ISeriesApi<"Line"> | null>(null);
-  const volumeSeriesRef = useRef<ISeriesApi<"Histogram"> | null>(null);
+  const [priceData, setPriceData] = useState<SingleValueData[]>([]);
+  const [volumeData, setVolumeData] = useState<SingleValueData[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [timeFrame, setTimeFrame] = useState<TimeFrame>("1h");
+  const [, setChartType] = useState<ChartType>("line");
+  const [action, setAction] = useAtom(actionAtom);
+  const [assets] = useAtom(assetsAtom);
+  const [selectedAsset, setSelectedAsset] = useState(0);
+  const [settings] = useAtom(settingsAtom);
+
+  const asset = assets.find((asset) => asset.name === action.curPair);
+  const symbol = asset?.name || "QX";
 
   useEffect(() => {
-    if (!chartContainerRef.current) return;
-    const chart = createChart(chartContainerRef.current, CHART_OPTIONS);
-    chartRef.current = chart;
-    priceSeriesRef.current = chart.addSeries({
-      type: "Line",
-      color: "#00FF00",
-      lineWidth: 2,
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        const res = await fetchAssetChartAveragePrice(
+          asset?.issuer || "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFXIB",
+          symbol,
+        );
+
+        const avgPriceData: SingleValueData[] =
+          res?.map((v) => ({
+            value: v.averagePrice,
+            time: v.time as Time,
+          })) ?? [];
+
+        const histogramVolumeData: SingleValueData[] =
+          res?.map((v) => ({
+            value: v.totalAmount,
+            time: v.time as Time,
+          })) ?? [];
+
+        setPriceData(avgPriceData);
+        setVolumeData(histogramVolumeData);
+      } catch (error) {
+        console.error("Failed to fetch chart data:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [asset, timeFrame, symbol]);
+
+  const handleTimeFrameChange = (newTimeFrame: TimeFrame) => {
+    setTimeFrame(newTimeFrame);
+  };
+
+  const handleChartTypeChange = (newChartType: ChartType) => {
+    setChartType(newChartType);
+  };
+
+  const handleAssetChange = (value: string) => {
+    const index = parseInt(value);
+    setSelectedAsset(index);
+    setAction({
+      ...action,
+      curPair: assets[index].name,
     });
-  }, []);
+  };
+
+  if (loading && priceData.length === 0) {
+    return (
+      <div className={cn("flex h-full w-full items-center justify-center", className)} {...props}>
+        <Loader2 className="h-8 w-8 animate-spin text-gray-400" />
+      </div>
+    );
+  }
 
   return (
-    <Card className={clsx("w-full", className)} {...props}>
-      <div></div>
-      {/* <div
-        ref={chartContainerRef}
-        className="border-1 h-full min-h-[250px] w-full max-w-2xl rounded-lg"
-      ></div> */}
-    </Card>
+    <div className={cn("h-full w-full", className)} {...props}>
+      <LightweightChart
+        priceDataSeries={priceData}
+        volumeDataSeries={volumeData}
+        className="h-full"
+        title={`${symbol} Price Chart`}
+        symbol={symbol}
+        loading={loading}
+        showControls={false}
+        showTooltip={true}
+        theme={settings.darkMode ? "dark" : "light"}
+        HeaderComponent={
+          <div className="flex w-36 items-center gap-2">
+            <Select onValueChange={handleAssetChange} value={selectedAsset.toString()}>
+              <SelectTrigger>
+                <SelectValue placeholder="Select asset" />
+              </SelectTrigger>
+              <SelectContent>
+                {assets.map((option, index) => (
+                  <SelectItem key={option.name} value={index.toString()}>
+                    {option.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        }
+        onTimeFrameChange={handleTimeFrameChange}
+        onChartTypeChange={handleChartTypeChange}
+      />
+    </div>
   );
 };
 

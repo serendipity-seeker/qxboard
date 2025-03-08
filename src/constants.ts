@@ -2,6 +2,8 @@ export const RPC_URL = "https://rpc.qubic.org";
 
 export const API_URL = "https://api.qubic.org";
 
+export const EXPLORER_URL = "https://explorer.qubic.org";
+
 export const DEFAULT_TX_SIZE = 144;
 
 export const DEFAULT_TICK_OFFSET = 6;
@@ -21,3 +23,4 @@ export const ISSUER = new Map<string, string>([
   ["QCAP", "QCAPWMYRSHLBJHSTTZQVCIBARVOASKDENASAKNOBRGPFWWKRCUVUAXYEZVOG"],
   ["VSTB001", "VALISTURNWYFQAMVLAKJVOKJQKKBXZZFEASEYCAGNCFMZARJEMMFSESEFOWM"],
 ]);
+

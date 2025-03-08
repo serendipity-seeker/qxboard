@@ -67,9 +67,13 @@ const OrderbookSettingsModal: React.FC<OrderbookSettingsModalProps> = ({
         <Separator className="my-2" />
 
         <Tabs defaultValue="display" className="w-full">
-          <TabsList className="mb-4 grid w-full grid-cols-2">
-            <TabsTrigger value="display">Display</TabsTrigger>
-            <TabsTrigger value="grouping">Price Grouping</TabsTrigger>
+          <TabsList className="grid w-full grid-cols-2">
+            <TabsTrigger value="display" className="bg-secondary">
+              Display
+            </TabsTrigger>
+            <TabsTrigger value="grouping" className="bg-secondary">
+              Price Grouping
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="display" className="space-y-4">

@@ -41,11 +41,11 @@ const Home: React.FC = () => {
   }, []);
 
   return (
-    <div className="container mx-auto h-full space-y-4 overflow-hidden p-2">
+    <div className="container mx-auto space-y-4 p-2">
       {/* Main content area */}
-      <div className="grid h-[calc(100vh-10rem)] gap-1 overflow-hidden sm:grid-cols-1 lg:grid-cols-[3fr_1fr]">
+      <div className="grid h-[100vh] gap-1 sm:grid-cols-1 lg:grid-cols-[3fr_1fr]">
         {/* Left column - Chart, History, User Orders */}
-        <div className="grid h-full grid-rows-[3fr_1fr] gap-1 overflow-hidden">
+        <div className="grid grid-rows-[3fr_1fr] gap-1 overflow-hidden">
           <Card className="relative overflow-hidden p-2" ref={chartContainerRef}>
             {chartDimensions.width > 0 && chartDimensions.height > 0 && (
               <Chart
@@ -60,18 +60,22 @@ const Home: React.FC = () => {
           <Card className="overflow-auto p-2 text-xs">
             <Tabs defaultValue="history" className="h-full w-full">
               <TabsList className="mb-2 grid w-full grid-cols-2">
-                <TabsTrigger value="history">Market Trades</TabsTrigger>
-                <TabsTrigger value="userOrders">My Orders</TabsTrigger>
+                <TabsTrigger value="history" className="bg-secondary">
+                  Asset Trades
+                </TabsTrigger>
+                <TabsTrigger value="userOrders" className="bg-secondary">
+                  My Orders
+                </TabsTrigger>
               </TabsList>
               <TabsContent
                 value="history"
-                className="scrollbar-thin scrollbar-thumb-gray-700 scrollbar-track-gray-100 dark:scrollbar-thumb-gray-600 dark:scrollbar-track-gray-800 h-[calc(100%-40px)] overflow-auto"
+                className="h-[calc(100%-40px)] overflow-auto scrollbar-thin scrollbar-track-gray-100 scrollbar-thumb-gray-700 dark:scrollbar-track-gray-800 dark:scrollbar-thumb-gray-600"
               >
                 <History className="w-full" />
               </TabsContent>
               <TabsContent
                 value="userOrders"
-                className="scrollbar-thin scrollbar-thumb-gray-700 scrollbar-track-gray-100 dark:scrollbar-thumb-gray-600 dark:scrollbar-track-gray-800 h-[calc(100%-40px)] overflow-auto"
+                className="h-[calc(100%-40px)] overflow-auto scrollbar-thin scrollbar-track-gray-100 scrollbar-thumb-gray-700 dark:scrollbar-track-gray-800 dark:scrollbar-thumb-gray-600"
               >
                 <UserOrder className="w-full" />
               </TabsContent>
@@ -80,8 +84,8 @@ const Home: React.FC = () => {
         </div>
 
         {/* Right column - Orderbook, Order Form */}
-        <div className="grid h-full grid-rows-[3fr_1fr] gap-1 overflow-hidden">
-          <Card className="scrollbar-thin scrollbar-thumb-gray-700 scrollbar-track-gray-100 dark:scrollbar-thumb-gray-600 dark:scrollbar-track-gray-800 overflow-auto text-xs">
+        <div className="grid h-full gap-1">
+          <Card className="text-xs">
             <Orderbook />
           </Card>
           <Card className="p-1">

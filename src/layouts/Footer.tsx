@@ -8,7 +8,7 @@ const Footer: React.FC = () => {
   const [, setIsSupportModalOpen] = useState(false);
 
   return (
-    <footer className="border-t border-gray-200 px-4 dark:border-gray-800 sm:px-6">
+    <footer className="border-t border-gray-200 px-4 dark:border-gray-800 sm:px-6 bg-background">
       <div className="container flex flex-col items-center justify-between gap-4 py-6 md:h-16 md:flex-row md:py-0">
         <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
           <span>{packageJson.title}</span>

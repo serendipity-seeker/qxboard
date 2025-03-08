@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, useRef } from "react";
 import OrderTable from "./OrderTable";
 import { actionAtom } from "@/store/action";
 import { useAtom } from "jotai";
@@ -22,6 +22,8 @@ const Orderbook: React.FC<OrderbookProps> = ({ className, ...props }) => {
   const [, setAction] = useAtom(actionAtom);
   const [assets] = useAtom(assetsAtom);
   const { open, onOpen, onClose } = useDisclosure();
+  const midPriceRef = useRef<HTMLDivElement>(null);
+  const mainContentRef = useRef<HTMLDivElement>(null);
 
   // Calculate market dominance
   const askVolume = useMemo(
@@ -118,8 +120,8 @@ const Orderbook: React.FC<OrderbookProps> = ({ className, ...props }) => {
   useEffect(() => {
     if (askOrders.length > 0 && bidOrders.length > 0) {
       // Fix the index for best ask price
-      const bestAsk = askOrders.length > 0 ? askOrders[0]?.price || 0 : 0;
-      const bestBid = bidOrders.length > 0 ? bidOrders[0]?.price || 0 : 0;
+      const bestAsk = askOrders.length > 0 ? Number(askOrders[0]?.price) || 0 : 0;
+      const bestBid = bidOrders.length > 0 ? Number(bidOrders[0]?.price) || 0 : 0;
 
       if (bestAsk && bestBid) {
         setMidPrice((bestAsk + bestBid) / 2);
@@ -134,7 +136,7 @@ const Orderbook: React.FC<OrderbookProps> = ({ className, ...props }) => {
   };
 
   return (
-    <div className={cn("relative flex h-full w-full flex-col", className)} {...props}>
+    <div className={cn("flex h-full w-full flex-col", className)} {...props}>
       <div className="flex items-center justify-between p-2 px-2">
         <h3 className="text-sm font-medium">Orderbook</h3>
         <Button variant="ghost" size="icon" className="h-8 w-8" onClick={onOpen}>
@@ -150,40 +152,36 @@ const Orderbook: React.FC<OrderbookProps> = ({ className, ...props }) => {
       </div>
 
       {/* Main content with flex layout */}
-      <div className="flex h-full w-full flex-col">
-        {/* Ask orders - always visible */}
-        <div className="flex-1 overflow-y-auto">
-          <OrderTable
-            orders={groupedAskOrders}
-            type="ask"
-            id="ask-table"
-            className="h-full"
-            onSelectPrice={handleSelectPrice}
-            maxItems={settings.maxItems}
-            showCumulativeVolume={settings.showCumulativeVolume}
-            showHeader={false}
-          />
-        </div>
+      <div ref={mainContentRef} className="flex w-full flex-1 flex-col">
+        {/* Ask orders - 42.5% height */}
+        <OrderTable
+          orders={groupedAskOrders}
+          type="ask"
+          id="ask-table"
+          className={`flex-1 overflow-hidden h-[calc(${mainContentRef.current?.clientHeight}px-${midPriceRef.current?.clientHeight}px)]`}
+          onSelectPrice={handleSelectPrice}
+          maxItems={settings.maxItems}
+          showCumulativeVolume={settings.showCumulativeVolume}
+          showHeader={false}
+        />
 
-        {/* Middle price section - fixed position */}
-        <div className="flex w-full items-center justify-between border-y bg-background/50 px-4 py-2">
+        {/* Middle price section - fixed height */}
+        <div ref={midPriceRef} className="flex w-full items-center justify-between border-y bg-background/50 px-4 py-1">
           <div className="text-xs text-muted-foreground">Last Price</div>
-          <div className="text-sm font-semibold">{midPrice ? midPrice.toLocaleString() : "Loading..."}</div>
+          <div className="text-sm font-semibold">{midPrice ? midPrice.toLocaleString() : "Loading..."} QUBIC</div>
         </div>
 
-        {/* Bid orders - always visible */}
-        <div className="flex-1 overflow-y-auto">
-          <OrderTable
-            orders={groupedBidOrders}
-            type="bid"
-            id="bid-table"
-            className="h-full"
-            onSelectPrice={handleSelectPrice}
-            maxItems={settings.maxItems}
-            showCumulativeVolume={settings.showCumulativeVolume}
-            showHeader={false}
-          />
-        </div>
+        {/* Bid orders - 42.5% height */}
+        <OrderTable
+          orders={groupedBidOrders}
+          type="bid"
+          id="bid-table"
+          className={`flex-1 overflow-hidden h-[calc(100%-${midPriceRef.current?.clientHeight}px)]`}
+          onSelectPrice={handleSelectPrice}
+          maxItems={settings.maxItems}
+          showCumulativeVolume={settings.showCumulativeVolume}
+          showHeader={false}
+        />
       </div>
 
       {/* Market dominance indicator - fixed at bottom */}

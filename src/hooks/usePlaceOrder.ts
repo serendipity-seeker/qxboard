@@ -8,6 +8,8 @@ import { createQXOrderPayload } from "@/services/qx.service";
 import { broadcastTx } from "@/services/rpc.service";
 import { tickInfoAtom } from "@/store/tickInfo";
 import { assetsAtom } from "@/store/assets";
+import toast from "react-hot-toast";
+import { useTxMonitor } from "@/store/txMonitor";
 
 const usePlaceOrder = () => {
   const [orderTick, setOrderTick] = useState(0);
@@ -16,6 +18,7 @@ const usePlaceOrder = () => {
   const [settings] = useAtom(settingsAtom);
   const [tickInfo] = useAtom(tickInfoAtom);
   const [assets] = useAtom(assetsAtom);
+  const { startMonitoring } = useTxMonitor();
 
   const placeOrder = useCallback(
     async (
@@ -52,7 +55,21 @@ const usePlaceOrder = () => {
       const signedTx = await getSignedTx(transaction);
       const res = await broadcastTx(signedTx.tx);
 
-      if (res.code) setShowProgress(false);
+      const taskId = `place-order-${assetName}-${price}-${amount}-${Date.now()}`; // Unique task ID
+      const checker = async () => {
+        // TODO: Check if order is placed
+        return true;
+      };
+
+      const onSuccess = async () => {
+        toast.success("Order placed successfully");
+      };
+
+      const onFailure = async () => {
+        toast.error("Order placement failed");
+      };
+
+      startMonitoring(taskId, { checker, onSuccess, onFailure, targetTick: orderTick });
     },
     [setOrderTick, setShowProgress, createQXOrderPayload, broadcastTx],
   );

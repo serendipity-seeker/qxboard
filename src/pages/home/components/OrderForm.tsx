@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/utils";
+import usePlaceOrder from "@/hooks/usePlaceOrder";
 
 interface OrderFormProps extends React.HTMLAttributes<HTMLDivElement> {}
 
@@ -20,6 +21,8 @@ interface OrderFormData {
 const OrderForm: React.FC<OrderFormProps> = ({ className, ...props }) => {
   const [action] = useAtom(actionAtom);
   const [orderType, setOrderType] = useState<"buy" | "sell">("buy");
+
+  const { placeOrder } = usePlaceOrder();
 
   const {
     register,
@@ -136,7 +139,7 @@ const OrderForm: React.FC<OrderFormProps> = ({ className, ...props }) => {
             </div>
 
             <Button
-              type="submit"
+              onClick={() => placeOrder(action.curPair, orderType, watchedPrice, watchedQuantity)}
               className={cn(
                 "mt-2 w-full",
                 orderType === "buy"

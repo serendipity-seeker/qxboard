@@ -16,6 +16,7 @@ import AccountStatus from "./AccountStatus";
 import { EntityOrder } from "@/types";
 import UserTradeHistory from "./UserTradeHistory";
 import SettingPanel from "./SettingPanel";
+import usePlaceOrder from "@/hooks/usePlaceOrder";
 
 const UserNormal: React.FC = () => {
   const [activeTab, setActiveTab] = useState("settings");
@@ -24,6 +25,7 @@ const UserNormal: React.FC = () => {
   const [bidOrders, setBidOrders] = useState<EntityOrder[]>([]);
   const [loading, setLoading] = useState(true);
   const [, setAction] = useAtom(actionAtom);
+  const { placeOrder } = usePlaceOrder();
 
   const address = wallet?.publicKey;
 
@@ -50,13 +52,7 @@ const UserNormal: React.FC = () => {
   }, [activeTab, address]);
 
   const handleCancelOrder = (order: EntityOrder, type: "buy" | "sell") => {
-    console.log(`Cancelling ${type} order:`, order);
-    setAction({
-      curPair: order.assetName,
-      curPrice: order.price,
-      curQty: order.numberOfShares,
-      action: type === "buy" ? "rmBuy" : "rmSell",
-    });
+    placeOrder(order.assetName, type === "buy" ? "rmBuy" : "rmSell", order.price, order.numberOfShares);
   };
 
   const renderOrders = () => {

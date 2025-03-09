@@ -17,8 +17,6 @@ const useGlobalTxMonitor = () => {
     Object.entries(monitoringTasks).forEach(([taskId, task]) => {
       const { checker, onSuccess, onFailure } = task;
 
-      if (!currentTick) return;
-
       const TIMEOUT_TICKS = 10;
       if (currentTick > task.targetTick + TIMEOUT_TICKS) {
         onFailure();
@@ -30,10 +28,9 @@ const useGlobalTxMonitor = () => {
         checker().then((success) => {
           if (success) {
             onSuccess();
+            stopMonitoring(taskId);
           } else {
-            onFailure();
           }
-          stopMonitoring(taskId);
         });
       }
     });

@@ -7,4 +7,6 @@ interface Action {
   action: "buy" | "sell" | "rmBuy" | "rmSell";
 }
 
-export const actionAtom = atom<Action>({} as Action);
+export const actionAtom = atom<Action>({
+  curPair: "QX",
+} as Action);

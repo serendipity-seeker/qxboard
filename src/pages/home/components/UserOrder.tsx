@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Loader2, X } from "lucide-react";
 import { useQubicConnect } from "@/components/connect/QubicConnectContext";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import usePlaceOrder from "@/hooks/usePlaceOrder";
 
 interface UserOrderProps extends React.HTMLAttributes<HTMLDivElement> {}
 const UserOrder: React.FC<UserOrderProps> = ({ ...props }) => {
@@ -16,6 +17,7 @@ const UserOrder: React.FC<UserOrderProps> = ({ ...props }) => {
   const [loading, setLoading] = useState(true);
   const [, setAction] = useAtom(actionAtom);
   const { wallet } = useQubicConnect();
+  const { placeOrder } = usePlaceOrder();
 
   const entityId = wallet?.publicKey || "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFXIB";
 
@@ -37,14 +39,7 @@ const UserOrder: React.FC<UserOrderProps> = ({ ...props }) => {
   }, [entityId]);
 
   const handleCancelOrder = (order: EntityOrder, type: "buy" | "sell") => {
-    // This would be replaced with actual cancel order logic
-    console.log(`Cancelling ${type} order:`, order);
-    setAction({
-      curPair: order.assetName,
-      curPrice: order.price,
-      curQty: order.numberOfShares,
-      action: type === "buy" ? "rmBuy" : "rmSell",
-    });
+    placeOrder(order.assetName, type === "buy" ? "rmBuy" : "rmSell", order.price, order.numberOfShares);
   };
 
   const renderOrders = () => {
@@ -113,9 +108,7 @@ const UserOrder: React.FC<UserOrderProps> = ({ ...props }) => {
 
   return (
     <div {...props}>
-      <div className="px-4 pb-0 pt-4">
-        {/* <h2 className="text-lg font-medium">Your Orders</h2> */}
-      </div>
+      <div className="px-4 pb-0 pt-4">{/* <h2 className="text-lg font-medium">Your Orders</h2> */}</div>
       <div className="p-4">{renderOrders()}</div>
     </div>
   );

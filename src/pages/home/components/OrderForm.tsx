@@ -51,19 +51,7 @@ const OrderForm: React.FC<OrderFormProps> = ({ className, ...props }) => {
 
   const onSubmit = async (data: OrderFormData) => {
     try {
-      console.log("Submitting order:", {
-        type: orderType,
-        price: data.price,
-        quantity: data.quantity,
-        pair: action.curPair,
-        total: data.price * data.quantity,
-      });
-
-      // Reset form after successful submission
-      reset({
-        price: data.price, // Keep the same price for consecutive orders
-        quantity: 0,
-      });
+      await placeOrder(action.curPair, orderType, data.price, data.quantity);
     } catch (error) {
       console.error("Failed to submit order:", error);
     }
@@ -139,7 +127,7 @@ const OrderForm: React.FC<OrderFormProps> = ({ className, ...props }) => {
             </div>
 
             <Button
-              onClick={() => placeOrder(action.curPair, orderType, watchedPrice, watchedQuantity)}
+              type="submit"
               className={cn(
                 "mt-2 w-full",
                 orderType === "buy"

@@ -22,7 +22,6 @@ const Chart: React.FC<ChartProps> = ({ className, ...props }) => {
   const [, setChartType] = useState<ChartType>("line");
   const [action, setAction] = useAtom(actionAtom);
   const [assets] = useAtom(assetsAtom);
-  const [selectedAsset, setSelectedAsset] = useState(0);
   const [settings] = useAtom(settingsAtom);
 
   const asset = assets.find((asset) => asset.name === action.curPair);
@@ -70,11 +69,9 @@ const Chart: React.FC<ChartProps> = ({ className, ...props }) => {
   };
 
   const handleAssetChange = (value: string) => {
-    const index = parseInt(value);
-    setSelectedAsset(index);
     setAction({
       ...action,
-      curPair: assets[index].name,
+      curPair: value,
     });
   };
 
@@ -100,13 +97,13 @@ const Chart: React.FC<ChartProps> = ({ className, ...props }) => {
         theme={settings.darkMode ? "dark" : "light"}
         HeaderComponent={
           <div className="flex w-36 items-center gap-2">
-            <Select onValueChange={handleAssetChange} value={selectedAsset.toString()}>
+            <Select onValueChange={handleAssetChange} value={action.curPair}>
               <SelectTrigger>
                 <SelectValue placeholder="Select asset" />
               </SelectTrigger>
               <SelectContent>
-                {assets.map((option, index) => (
-                  <SelectItem key={option.name} value={index.toString()}>
+                {assets.map((option) => (
+                  <SelectItem key={option.name} value={option.name}>
                     {option.name}
                   </SelectItem>
                 ))}

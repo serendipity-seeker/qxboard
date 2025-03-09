@@ -7,12 +7,14 @@ import { useContext } from "react";
 import { useEffect } from "react";
 import { useQubicConnect } from "@/components/connect/QubicConnectContext";
 import { MetaMaskContext } from "@/components/connect/MetamaskContext";
+import useGlobalTxMonitor from "@/hooks/useGlobalTxMonitor";
 
 const Layout: React.FC = () => {
   const [state] = useContext(MetaMaskContext);
   const { mmSnapConnect, connect } = useQubicConnect();
   useRPCFetcher();
   useAPIFetcher();
+  useGlobalTxMonitor();
 
   useEffect(() => {
     const storedWallet = localStorage.getItem("wallet");

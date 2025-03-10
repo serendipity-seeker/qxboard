@@ -30,7 +30,6 @@ const OrderForm: React.FC<OrderFormProps> = ({ className, ...props }) => {
     watch,
     setValue,
     formState: { errors },
-    reset,
   } = useForm<OrderFormData>({
     defaultValues: {
       price: action.curPrice || 0,

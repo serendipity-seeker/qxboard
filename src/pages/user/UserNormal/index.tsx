@@ -8,10 +8,8 @@ import { BiHistory } from "react-icons/bi";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { MdOutlineShoppingCart, MdOutlineReceiptLong } from "react-icons/md";
 import { useQubicConnect } from "@/components/connect/QubicConnectContext";
-import { useAtom } from "jotai";
 import { fetchEntityAskOrders, fetchEntityBidOrders } from "@/services/api.service";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { actionAtom } from "@/store/action";
 import AccountStatus from "./AccountStatus";
 import { EntityOrder } from "@/types";
 import UserTradeHistory from "./UserTradeHistory";
@@ -24,7 +22,6 @@ const UserNormal: React.FC = () => {
   const [askOrders, setAskOrders] = useState<EntityOrder[]>([]);
   const [bidOrders, setBidOrders] = useState<EntityOrder[]>([]);
   const [loading, setLoading] = useState(true);
-  const [, setAction] = useAtom(actionAtom);
   const { placeOrder } = usePlaceOrder();
 
   const address = wallet?.publicKey;

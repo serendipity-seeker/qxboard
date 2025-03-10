@@ -2,8 +2,6 @@ import { useEffect, useState } from "react";
 import { fetchEntityAskOrders, fetchEntityBidOrders } from "@/services/api.service";
 import { EntityOrder } from "@/types";
 import { formatQubicAmount } from "@/utils";
-import { useAtom } from "jotai";
-import { actionAtom } from "@/store/action";
 import { Button } from "@/components/ui/button";
 import { Loader2, X } from "lucide-react";
 import { useQubicConnect } from "@/components/connect/QubicConnectContext";
@@ -15,7 +13,6 @@ const UserOrder: React.FC<UserOrderProps> = ({ ...props }) => {
   const [askOrders, setAskOrders] = useState<EntityOrder[]>([]);
   const [bidOrders, setBidOrders] = useState<EntityOrder[]>([]);
   const [loading, setLoading] = useState(true);
-  const [, setAction] = useAtom(actionAtom);
   const { wallet } = useQubicConnect();
   const { placeOrder } = usePlaceOrder();
 

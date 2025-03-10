@@ -7,12 +7,15 @@ import { Loader2, X } from "lucide-react";
 import { useQubicConnect } from "@/components/connect/QubicConnectContext";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import usePlaceOrder from "@/hooks/usePlaceOrder";
+import { refetchAtom } from "@/store/action";
+import { useAtom } from "jotai";
 
 interface UserOrderProps extends React.HTMLAttributes<HTMLDivElement> {}
 const UserOrder: React.FC<UserOrderProps> = ({ ...props }) => {
   const [askOrders, setAskOrders] = useState<EntityOrder[]>([]);
   const [bidOrders, setBidOrders] = useState<EntityOrder[]>([]);
   const [loading, setLoading] = useState(true);
+  const [refetch] = useAtom(refetchAtom);
   const { wallet } = useQubicConnect();
   const { placeOrder } = usePlaceOrder();
 
@@ -33,7 +36,7 @@ const UserOrder: React.FC<UserOrderProps> = ({ ...props }) => {
     };
 
     fetchOrders();
-  }, [entityId]);
+  }, [entityId, refetch]);
 
   const handleCancelOrder = (order: EntityOrder, type: "buy" | "sell") => {
     placeOrder(order.assetName, type === "buy" ? "rmBuy" : "rmSell", order.price, order.numberOfShares);

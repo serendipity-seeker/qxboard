@@ -1,6 +1,6 @@
 import { EXPLORER_URL } from "@/constants";
 import { fetchAssetTrades } from "@/services/api.service";
-import { actionAtom } from "@/store/action";
+import { actionAtom, refetchAtom } from "@/store/action";
 import { assetsAtom } from "@/store/assets";
 import { Trade } from "@/types";
 import { cn } from "@/utils";
@@ -15,6 +15,7 @@ const History: React.FC<HistoryProps> = ({ className, ...props }) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [action] = useAtom(actionAtom);
   const [assets] = useAtom(assetsAtom);
+  const [refetch] = useAtom(refetchAtom);
 
   useEffect(() => {
     const loadTrades = async () => {
@@ -36,7 +37,7 @@ const History: React.FC<HistoryProps> = ({ className, ...props }) => {
     };
 
     loadTrades();
-  }, [action.curPair]);
+  }, [action.curPair, refetch]);
 
   return (
     <div className={cn("w-full", className)} {...props}>

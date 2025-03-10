@@ -11,6 +11,7 @@ import OrderbookSettingsModal from "./OrderbookSettingsModal";
 import { orderbookSettingsAtom } from "@/store/orderbook";
 import { assetsAtom } from "@/store/assets";
 import { useDisclosure } from "@/hooks/useDisclosure";
+import { refetchAtom } from "@/store/action";
 
 interface OrderbookProps extends React.HTMLAttributes<HTMLDivElement> {}
 const Orderbook: React.FC<OrderbookProps> = ({ className, ...props }) => {
@@ -20,6 +21,7 @@ const Orderbook: React.FC<OrderbookProps> = ({ className, ...props }) => {
   const [settings, setSettings] = useAtom(orderbookSettingsAtom);
   const [, setAction] = useAtom(actionAtom);
   const [assets] = useAtom(assetsAtom);
+  const [refetch] = useAtom(refetchAtom);
   const { open, onOpen, onClose } = useDisclosure();
   const midPriceRef = useRef<HTMLDivElement>(null);
   const mainContentRef = useRef<HTMLDivElement>(null);
@@ -114,7 +116,7 @@ const Orderbook: React.FC<OrderbookProps> = ({ className, ...props }) => {
     // Set up polling for real-time updates
     const intervalId = setInterval(fetchOrders, 5000);
     return () => clearInterval(intervalId);
-  }, [action.curPair]);
+  }, [action.curPair, refetch]);
 
   useEffect(() => {
     if (askOrders.length > 0 && bidOrders.length > 0) {

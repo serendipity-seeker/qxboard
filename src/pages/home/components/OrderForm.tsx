@@ -27,9 +27,9 @@ const OrderForm: React.FC<OrderFormProps> = ({ className, ...props }) => {
   const [balances] = useAtom(balancesAtom);
   const [orderType, setOrderType] = useState<"buy" | "sell">("buy");
   const { wallet } = useQubicConnect();
-  const [assetBalance, setAssetBalance] = useState<number>(0);
-  const { placeOrder} = usePlaceOrder();
+  const { placeOrder } = usePlaceOrder();
   const [assets] = useAtom(assetsAtom);
+  const asset = assets.find((asset) => asset.name === action.curPair);
 
   const {
     register,
@@ -154,7 +154,7 @@ const OrderForm: React.FC<OrderFormProps> = ({ className, ...props }) => {
               />
               {errors.quantity && <p className="text-sm text-error-40">{errors.quantity.message}</p>}
               <p className="px-3 pt-1 text-right text-sm text-muted-foreground">
-                {assetBalance} {action.curPair}
+                {asset?.balance} {action.curPair}
               </p>
             </div>
 

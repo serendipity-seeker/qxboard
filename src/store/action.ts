@@ -10,6 +10,8 @@ interface Action {
   action: "buy" | "sell" | "rmBuy" | "rmSell";
 }
 
+export const refetchAtom = atom(false);
+
 export const actionAtom = atom<Action>({
   curPair: "QX",
 } as Action);

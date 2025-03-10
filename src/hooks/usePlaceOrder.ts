@@ -11,6 +11,7 @@ import { assetsAtom } from "@/store/assets";
 import toast from "react-hot-toast";
 import { useTxMonitor } from "@/store/txMonitor";
 import { fetchAssetAskOrders, fetchAssetBidOrders, fetchEntityTrades } from "@/services/api.service";
+import { refetchAtom } from "@/store/action";
 
 const usePlaceOrder = () => {
   const [showProgress, setShowProgress] = useState(false);
@@ -18,6 +19,8 @@ const usePlaceOrder = () => {
   const [settings] = useAtom(settingsAtom);
   const [tickInfo] = useAtom(tickInfoAtom);
   const [assets] = useAtom(assetsAtom);
+  const [, setRefetch] = useAtom(refetchAtom);
+
   const { startMonitoring } = useTxMonitor();
 
   const placeOrder = async (
@@ -98,6 +101,7 @@ const usePlaceOrder = () => {
       } else {
         toast.success("Order filled successfully");
       }
+      setRefetch((prev) => !prev);
     };
 
     const onFailure = async () => {

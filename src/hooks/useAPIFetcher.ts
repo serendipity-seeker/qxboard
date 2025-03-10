@@ -5,11 +5,13 @@ import { fetchAssets, fetchTrades } from "@/services/api.service";
 import { tradesAtom } from "@/store/trades";
 import { fetchOwnedAssets } from "@/services/rpc.service";
 import { useQubicConnect } from "@/components/connect/QubicConnectContext";
+import { refetchAtom } from "@/store/action";
 
 const useAPIFetcher = () => {
   const { wallet } = useQubicConnect();
   const [, setAssets] = useAtom(assetsAtom);
   const [, setTrades] = useAtom(tradesAtom);
+  const [refetch] = useAtom(refetchAtom);
 
   useEffect(() => {
     if (!wallet?.publicKey) return;
@@ -19,7 +21,7 @@ const useAPIFetcher = () => {
       setAssets(assets.map((asset) => ({ ...asset, balance: balance.get(asset.name) || 0 })));
     };
     fetchData();
-  }, [wallet?.publicKey]);
+  }, [wallet?.publicKey, refetch]);
 
   // Fetch trades
   useEffect(() => {

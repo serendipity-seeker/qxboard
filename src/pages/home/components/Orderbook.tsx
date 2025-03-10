@@ -185,7 +185,7 @@ const Orderbook: React.FC<OrderbookProps> = ({ className, ...props }) => {
       </div>
 
       {/* Market dominance indicator - fixed at bottom */}
-      <div className="mt-2 px-2">
+      <div className="px-2 py-2">
         <div className="mb-1 flex justify-between text-xs">
           <span className="text-green-500">Buy {bidDominance.toFixed(1)}%</span>
           <span className="text-red-500">Sell {(100 - bidDominance).toFixed(1)}%</span>

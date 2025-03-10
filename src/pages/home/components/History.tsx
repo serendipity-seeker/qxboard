@@ -47,29 +47,29 @@ const History: React.FC<HistoryProps> = ({ className, ...props }) => {
         ) : trades.length === 0 ? (
           <div className="py-4 text-center text-gray-500">No recent trades</div>
         ) : (
-          <div className="overflow-x-auto">
+          <div className="overflow-auto">
             <table className="w-full">
               <thead>
                 <tr className="border-b text-gray-500">
-                  <th className="px-2 py-2 text-left">Price</th>
-                  <th className="px-2 py-2 text-left">Amount</th>
-                  <th className="px-2 py-2 text-left">TxID</th>
-                  <th className="px-2 py-2 text-left">Time</th>
+                  <th className="p-2 text-left">Price</th>
+                  <th className="p-2 text-left">Amount</th>
+                  <th className="p-2 text-left">TxID</th>
+                  <th className="p-2 text-left">Time</th>
                 </tr>
               </thead>
               <tbody>
                 {trades.map((trade, index) => (
                   <tr key={index} className="border-b border-gray-100">
-                    <td className={cn("px-2 py-2", trade.bid ? "text-green-500" : "text-red-500")}>
+                    <td className={cn("p-2", trade.bid ? "text-green-500" : "text-red-500")}>
                       {trade.price.toLocaleString()}
                     </td>
-                    <td className="px-2 py-2">{trade.numberOfShares}</td>
+                    <td className="p-2">{trade.numberOfShares}</td>
                     <td className="w-[200px] overflow-hidden text-ellipsis">
                       <Link to={`${EXPLORER_URL}/network/tx/${trade.transactionHash}`} target="_blank">
                         {trade.transactionHash}
                       </Link>
                     </td>
-                    <td className="px-2 py-2">{new Date(trade.tickTime).toLocaleString()}</td>
+                    <td className="text-nowrap p-2">{new Date(trade.tickTime).toLocaleString()}</td>
                   </tr>
                 ))}
               </tbody>

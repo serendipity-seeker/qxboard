@@ -6,7 +6,7 @@ export const EXPLORER_URL = "https://explorer.qubic.org";
 
 export const DEFAULT_TX_SIZE = 144;
 
-export const DEFAULT_TICK_OFFSET = 6;
+export const DEFAULT_TICK_OFFSET = 10;
 
 export const ISSUER = new Map<string, string>([
   ["QX", "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFXIB"],

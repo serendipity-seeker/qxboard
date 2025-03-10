@@ -16,7 +16,6 @@ interface OrderbookProps extends React.HTMLAttributes<HTMLDivElement> {}
 const Orderbook: React.FC<OrderbookProps> = ({ className, ...props }) => {
   const [askOrders, setAskOrders] = useState<EntityOrder[]>([]);
   const [bidOrders, setBidOrders] = useState<EntityOrder[]>([]);
-  const [midPrice, setMidPrice] = useState<number | null>(null);
   const [action] = useAtom(actionAtom);
   const [settings, setSettings] = useAtom(orderbookSettingsAtom);
   const [, setAction] = useAtom(actionAtom);
@@ -115,7 +114,7 @@ const Orderbook: React.FC<OrderbookProps> = ({ className, ...props }) => {
     // Set up polling for real-time updates
     const intervalId = setInterval(fetchOrders, 5000);
     return () => clearInterval(intervalId);
-  }, [action]);
+  }, [action.curPair]);
 
   useEffect(() => {
     if (askOrders.length > 0 && bidOrders.length > 0) {
@@ -123,11 +122,7 @@ const Orderbook: React.FC<OrderbookProps> = ({ className, ...props }) => {
       const bestAsk = askOrders.length > 0 ? Number(askOrders[0]?.price) || 0 : 0;
       const bestBid = bidOrders.length > 0 ? Number(bidOrders[0]?.price) || 0 : 0;
 
-      if (bestAsk && bestBid) {
-        setMidPrice((bestAsk + bestBid) / 2);
-      }
-    } else {
-      setMidPrice(null);
+      setAction((prev) => ({ ...prev, curPairBestAskPrice: bestAsk, curPairBestBidPrice: bestBid }));
     }
   }, [askOrders, bidOrders]);
 
@@ -168,7 +163,9 @@ const Orderbook: React.FC<OrderbookProps> = ({ className, ...props }) => {
         {/* Middle price section - fixed height */}
         <div ref={midPriceRef} className="flex w-full items-center justify-between border-y bg-background/50 px-4 py-1">
           <div className="text-xs text-muted-foreground">Last Price</div>
-          <div className="text-sm font-semibold">{midPrice ? midPrice.toLocaleString() : "Loading..."} QUBIC</div>
+          <div className="text-sm font-semibold">
+            {action.curPairLatestTradePrice ? action.curPairLatestTradePrice.toLocaleString() : "Loading..."} QUBIC
+          </div>
         </div>
 
         {/* Bid orders - 42.5% height */}

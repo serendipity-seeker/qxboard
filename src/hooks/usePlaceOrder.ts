@@ -10,7 +10,7 @@ import { tickInfoAtom } from "@/store/tickInfo";
 import { assetsAtom } from "@/store/assets";
 import toast from "react-hot-toast";
 import { useTxMonitor } from "@/store/txMonitor";
-import { fetchAssetAskOrders, fetchAssetBidOrders } from "@/services/api.service";
+import { fetchAssetAskOrders, fetchAssetBidOrders, fetchEntityTrades } from "@/services/api.service";
 
 const usePlaceOrder = () => {
   const [showProgress, setShowProgress] = useState(false);
@@ -25,6 +25,7 @@ const usePlaceOrder = () => {
     type: "buy" | "sell" | "rmBuy" | "rmSell",
     price: number,
     amount: number,
+    isMaker?: boolean,
   ): Promise<void> => {
     if (!wallet?.publicKey) return;
 
@@ -63,11 +64,21 @@ const usePlaceOrder = () => {
     const checker = async () => {
       switch (type) {
         case "buy":
-          const bidOrders = await fetchAssetBidOrders(issuer, assetName);
-          return bidOrders.some((order) => order.price === price && order.entityId === wallet?.publicKey);
+          if (isMaker) {
+            const bidOrders = await fetchAssetBidOrders(issuer, assetName);
+            return bidOrders.some((order) => order.price === price && order.entityId === wallet?.publicKey);
+          } else {
+            const trades = await fetchEntityTrades(wallet?.publicKey);
+            return trades.some((trade) => trade.price === price && trade.taker === wallet?.publicKey);
+          }
         case "sell":
-          const askOrders = await fetchAssetAskOrders(issuer, assetName);
-          return askOrders.some((order) => order.price === price && order.entityId === wallet?.publicKey);
+          if (isMaker) {
+            const askOrders = await fetchAssetAskOrders(issuer, assetName);
+            return askOrders.some((order) => order.price === price && order.entityId === wallet?.publicKey);
+          } else {
+            const trades = await fetchEntityTrades(wallet?.publicKey);
+            return trades.some((trade) => trade.price === price && trade.taker === wallet?.publicKey);
+          }
         case "rmBuy":
           const rmAskOrders = await fetchAssetAskOrders(issuer, assetName);
           return !rmAskOrders.some((order) => order.price === price && order.entityId === wallet?.publicKey);
@@ -80,11 +91,23 @@ const usePlaceOrder = () => {
     };
 
     const onSuccess = async () => {
-      toast.success("Order placed successfully");
+      if (type.includes("rm")) {
+        toast.success("Order removed successfully");
+      } else if (isMaker) {
+        toast.success("Order placed successfully");
+      } else {
+        toast.success("Order filled successfully");
+      }
     };
 
     const onFailure = async () => {
-      toast.error("Order placement failed");
+      if (type.includes("rm")) {
+        toast.error("Order removal failed");
+      } else if (isMaker) {
+        toast.error("Order placement failed");
+      } else {
+        toast.error("Order fill failed");
+      }
     };
 
     startMonitoring(taskId, { checker, onSuccess, onFailure, targetTick: tickInfo?.tick + settings.tickOffset });

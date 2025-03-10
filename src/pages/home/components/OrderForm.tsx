@@ -1,15 +1,19 @@
-import { useAtom } from "jotai";
-import { actionAtom } from "@/store/action";
-import { useState, useEffect } from "react";
-import { useForm } from "react-hook-form";
+import { useQubicConnect } from "@/components/connect/QubicConnectContext";
 import { Button } from "@/components/ui/button";
-import { formatQubicAmount } from "@/utils";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
-import { cn } from "@/utils";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import usePlaceOrder from "@/hooks/usePlaceOrder";
+import { fetchOwnedAssets } from "@/services/rpc.service";
+import { actionAtom } from "@/store/action";
+import { assetsAtom } from "@/store/assets";
+import { balancesAtom } from "@/store/balances";
+import { cn, formatQubicAmount } from "@/utils";
+import { useAtom } from "jotai";
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import toast from "react-hot-toast";
 
 interface OrderFormProps extends React.HTMLAttributes<HTMLDivElement> {}
 
@@ -20,9 +24,12 @@ interface OrderFormData {
 
 const OrderForm: React.FC<OrderFormProps> = ({ className, ...props }) => {
   const [action] = useAtom(actionAtom);
+  const [balances] = useAtom(balancesAtom);
   const [orderType, setOrderType] = useState<"buy" | "sell">("buy");
-
-  const { placeOrder } = usePlaceOrder();
+  const { wallet } = useQubicConnect();
+  const [assetBalance, setAssetBalance] = useState<number>(0);
+  const { placeOrder} = usePlaceOrder();
+  const [assets] = useAtom(assetsAtom);
 
   const {
     register,
@@ -49,11 +56,41 @@ const OrderForm: React.FC<OrderFormProps> = ({ className, ...props }) => {
   const total = (watchedPrice || 0) * (watchedQuantity || 0);
 
   const onSubmit = async (data: OrderFormData) => {
-    try {
-      await placeOrder(action.curPair, orderType, data.price, data.quantity);
-    } catch (error) {
-      console.error("Failed to submit order:", error);
+    if (await validateOrder(data)) {
+      try {
+        let isMaker = false;
+        if (orderType === "buy") {
+          isMaker = action.curPairBestAskPrice > data.price;
+        } else {
+          isMaker = action.curPairBestBidPrice < data.price;
+        }
+        await placeOrder(action.curPair, orderType, data.price, data.quantity, isMaker);
+      } catch (error) {
+        console.error("Failed to submit order:", error);
+      }
     }
+  };
+
+  const validateOrder = async (data: OrderFormData) => {
+    if (!wallet?.publicKey) {
+      toast.error("Please connect your wallet");
+      return false;
+    } else if (data.price <= 0 || data.quantity <= 0) {
+      toast.error("Invalid order price or quantity");
+      return false;
+    } else if (orderType === "buy") {
+      if (balances[0].balance < total) {
+        toast.error("Insufficient balance");
+        return false;
+      }
+    } else if (orderType === "sell") {
+      const assetBalance = await fetchOwnedAssets(wallet.publicKey || "");
+      if (assetBalance.get(action.curPair) < data.quantity) {
+        toast.error("Insufficient asset balance");
+        return false;
+      }
+    }
+    return true;
   };
 
   return (
@@ -116,6 +153,9 @@ const OrderForm: React.FC<OrderFormProps> = ({ className, ...props }) => {
                 className={errors.quantity ? "border-error-40" : ""}
               />
               {errors.quantity && <p className="text-sm text-error-40">{errors.quantity.message}</p>}
+              <p className="px-3 pt-1 text-right text-sm text-muted-foreground">
+                {assetBalance} {action.curPair}
+              </p>
             </div>
 
             <Separator className="my-1" />

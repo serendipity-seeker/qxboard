@@ -5,6 +5,7 @@ import {
   IQuerySC,
   IQuerySCResponse,
   LatestStats,
+  OwnedAsset,
   RichList,
   TickInfo,
   TxHistory,
@@ -117,7 +118,7 @@ export const fetchOwnedAssets = async (id: string): Promise<any> => {
   try {
     const response = await fetch(`${API_URL}/v1/assets/${id}/owned`);
     const data = await response.json();
-    return data;
+    return new Map(data.ownedAssets.map((el: OwnedAsset) => [el.data.issuedAsset.name, el.data.numberOfUnits]));
   } catch (error) {
     console.error("Error fetching owned assets:", error);
   }

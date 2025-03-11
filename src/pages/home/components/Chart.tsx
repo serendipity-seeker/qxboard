@@ -42,6 +42,11 @@ const Chart: React.FC<ChartProps> = ({ className, ...props }) => {
             time: v.time as Time,
           })) ?? [];
 
+        setAction((prev) => ({
+          ...prev,
+          curPairLatestTradePrice: Math.floor(avgPriceData[avgPriceData.length - 1].value || 0),
+        }));
+
         const histogramVolumeData: SingleValueData[] =
           res?.map((v) => ({
             value: v.totalAmount,

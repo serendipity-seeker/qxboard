@@ -41,12 +41,12 @@ const Home: React.FC = () => {
   }, []);
 
   return (
-    <div className="container mx-auto space-y-4 p-2">
+    <div className="container mx-auto flex flex-col space-y-4 p-2 md:p-4">
       {/* Main content area */}
-      <div className="grid h-[calc(100vh-5rem)] gap-1 sm:grid-cols-1 lg:grid-cols-[3fr_1fr]">
+      <div className="flex h-[1600px] flex-col gap-1 md:gap-2 lg:h-[1000px] lg:flex-row">
         {/* Left column - Chart, History, User Orders */}
-        <div className="grid grid-rows-[3fr_1fr] gap-1 overflow-hidden">
-          <Card className="relative overflow-hidden p-2" ref={chartContainerRef}>
+        <div className="flex w-full flex-grow flex-col gap-1 md:gap-2 lg:w-3/4">
+          <Card className="relative min-h-[300px] flex-grow overflow-hidden p-2 md:min-h-0" ref={chartContainerRef}>
             {chartDimensions.width > 0 && chartDimensions.height > 0 && (
               <Chart
                 className="absolute inset-0 p-2"
@@ -57,13 +57,13 @@ const Home: React.FC = () => {
               />
             )}
           </Card>
-          <Card className="overflow-auto p-2 text-xs">
+          <Card className="min-h-[300px] overflow-auto p-2 text-xs md:h-1/4 md:min-h-0">
             <Tabs defaultValue="history" className="h-full w-full">
-              <TabsList className="mb-2 grid w-full grid-cols-2">
-                <TabsTrigger value="history" className="bg-secondary">
+              <TabsList className="mb-2 flex w-full">
+                <TabsTrigger value="history" className="flex-1 bg-secondary">
                   Asset Trades
                 </TabsTrigger>
-                <TabsTrigger value="userOrders" className="bg-secondary">
+                <TabsTrigger value="userOrders" className="flex-1 bg-secondary">
                   My Orders
                 </TabsTrigger>
               </TabsList>
@@ -84,11 +84,11 @@ const Home: React.FC = () => {
         </div>
 
         {/* Right column - Orderbook, Order Form */}
-        <div className="grid h-full gap-1">
-          <Card className="text-xs">
+        <div className="lg:w-1/4">
+          <Card className="min-h-[400px] flex-grow text-xs lg:h-[620px]">
             <Orderbook />
           </Card>
-          <Card className="p-1">
+          <Card className="h-[380px] p-1 md:p-2">
             <OrderForm />
           </Card>
         </div>

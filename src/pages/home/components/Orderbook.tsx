@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo, useRef } from "react";
+import { useEffect, useState, useMemo } from "react";
 import OrderTable from "./OrderTable";
 import { actionAtom } from "@/store/action";
 import { useAtom } from "jotai";
@@ -11,19 +11,18 @@ import OrderbookSettingsModal from "./OrderbookSettingsModal";
 import { orderbookSettingsAtom } from "@/store/orderbook";
 import { assetsAtom } from "@/store/assets";
 import { useDisclosure } from "@/hooks/useDisclosure";
+import { refetchAtom } from "@/store/action";
 
 interface OrderbookProps extends React.HTMLAttributes<HTMLDivElement> {}
 const Orderbook: React.FC<OrderbookProps> = ({ className, ...props }) => {
   const [askOrders, setAskOrders] = useState<EntityOrder[]>([]);
   const [bidOrders, setBidOrders] = useState<EntityOrder[]>([]);
-  const [midPrice, setMidPrice] = useState<number | null>(null);
   const [action] = useAtom(actionAtom);
   const [settings, setSettings] = useAtom(orderbookSettingsAtom);
   const [, setAction] = useAtom(actionAtom);
   const [assets] = useAtom(assetsAtom);
+  const [refetch] = useAtom(refetchAtom);
   const { open, onOpen, onClose } = useDisclosure();
-  const midPriceRef = useRef<HTMLDivElement>(null);
-  const mainContentRef = useRef<HTMLDivElement>(null);
 
   // Calculate market dominance
   const askVolume = useMemo(
@@ -115,7 +114,7 @@ const Orderbook: React.FC<OrderbookProps> = ({ className, ...props }) => {
     // Set up polling for real-time updates
     const intervalId = setInterval(fetchOrders, 5000);
     return () => clearInterval(intervalId);
-  }, [action]);
+  }, [action.curPair, refetch]);
 
   useEffect(() => {
     if (askOrders.length > 0 && bidOrders.length > 0) {
@@ -123,11 +122,7 @@ const Orderbook: React.FC<OrderbookProps> = ({ className, ...props }) => {
       const bestAsk = askOrders.length > 0 ? Number(askOrders[0]?.price) || 0 : 0;
       const bestBid = bidOrders.length > 0 ? Number(bidOrders[0]?.price) || 0 : 0;
 
-      if (bestAsk && bestBid) {
-        setMidPrice((bestAsk + bestBid) / 2);
-      }
-    } else {
-      setMidPrice(null);
+      setAction((prev) => ({ ...prev, curPairBestAskPrice: bestAsk, curPairBestBidPrice: bestBid }));
     }
   }, [askOrders, bidOrders]);
 
@@ -136,7 +131,7 @@ const Orderbook: React.FC<OrderbookProps> = ({ className, ...props }) => {
   };
 
   return (
-    <div className={cn("flex h-full w-full flex-col", className)} {...props}>
+    <div className={cn("flex h-full w-full flex-col overflow-hidden", className)} {...props}>
       <div className="flex items-center justify-between p-2 px-2">
         <h3 className="text-sm font-medium">Orderbook</h3>
         <Button variant="secondary" size="icon" className="h-8 w-8" onClick={onOpen}>
@@ -152,13 +147,13 @@ const Orderbook: React.FC<OrderbookProps> = ({ className, ...props }) => {
       </div>
 
       {/* Main content with flex layout */}
-      <div ref={mainContentRef} className="flex w-full flex-1 flex-col">
+      <div className="flex flex-1 h-[500px] w-full flex-col">
         {/* Ask orders - 42.5% height */}
         <OrderTable
           orders={groupedAskOrders}
           type="ask"
           id="ask-table"
-          className={`flex-1 overflow-hidden h-[calc(${mainContentRef.current?.clientHeight}px-${midPriceRef.current?.clientHeight}px)]`}
+          className={`flex-1 overflow-hidden`}
           onSelectPrice={handleSelectPrice}
           maxItems={settings.maxItems}
           showCumulativeVolume={settings.showCumulativeVolume}
@@ -166,9 +161,11 @@ const Orderbook: React.FC<OrderbookProps> = ({ className, ...props }) => {
         />
 
         {/* Middle price section - fixed height */}
-        <div ref={midPriceRef} className="flex w-full items-center justify-between border-y bg-background/50 px-4 py-1">
+        <div className="flex w-full items-center justify-between border-y bg-background/50 px-4 py-1">
           <div className="text-xs text-muted-foreground">Last Price</div>
-          <div className="text-sm font-semibold">{midPrice ? midPrice.toLocaleString() : "Loading..."} QUBIC</div>
+          <div className="text-sm font-semibold">
+            {action.curPairLatestTradePrice ? action.curPairLatestTradePrice.toLocaleString() : "Loading..."} QUBIC
+          </div>
         </div>
 
         {/* Bid orders - 42.5% height */}
@@ -176,7 +173,7 @@ const Orderbook: React.FC<OrderbookProps> = ({ className, ...props }) => {
           orders={groupedBidOrders}
           type="bid"
           id="bid-table"
-          className={`flex-1 overflow-hidden h-[calc(100%-${midPriceRef.current?.clientHeight}px)]`}
+          className={`flex-1 overflow-hidden`}
           onSelectPrice={handleSelectPrice}
           maxItems={settings.maxItems}
           showCumulativeVolume={settings.showCumulativeVolume}
@@ -185,7 +182,7 @@ const Orderbook: React.FC<OrderbookProps> = ({ className, ...props }) => {
       </div>
 
       {/* Market dominance indicator - fixed at bottom */}
-      <div className="mt-2 px-2">
+      <div className="px-2 py-2">
         <div className="mb-1 flex justify-between text-xs">
           <span className="text-green-500">Buy {bidDominance.toFixed(1)}%</span>
           <span className="text-red-500">Sell {(100 - bidDominance).toFixed(1)}%</span>

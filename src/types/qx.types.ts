@@ -22,6 +22,7 @@ export interface IFees {
 export type Asset = {
   issuer: string;
   name: string;
+  balance?: number;
 };
 
 export type AssetOrder = {

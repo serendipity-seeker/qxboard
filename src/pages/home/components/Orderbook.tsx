@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo, useRef } from "react";
+import { useEffect, useState, useMemo } from "react";
 import OrderTable from "./OrderTable";
 import { actionAtom } from "@/store/action";
 import { useAtom } from "jotai";
@@ -23,8 +23,6 @@ const Orderbook: React.FC<OrderbookProps> = ({ className, ...props }) => {
   const [assets] = useAtom(assetsAtom);
   const [refetch] = useAtom(refetchAtom);
   const { open, onOpen, onClose } = useDisclosure();
-  const midPriceRef = useRef<HTMLDivElement>(null);
-  const mainContentRef = useRef<HTMLDivElement>(null);
 
   // Calculate market dominance
   const askVolume = useMemo(

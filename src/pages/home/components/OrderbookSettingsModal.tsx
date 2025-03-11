@@ -45,11 +45,6 @@ const OrderbookSettingsModal: React.FC<OrderbookSettingsModalProps> = ({
     onOpenChange(false);
   };
 
-  const getGroupingLabel = (value: number) => {
-    const labels = ["None", "0.1", "0.5", "1", "5", "10"];
-    return labels[value] || "Custom";
-  };
-
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[450px]">

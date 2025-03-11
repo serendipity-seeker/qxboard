@@ -1,7 +1,7 @@
 import { EntityOrder } from "@/types";
 import { createColumnHelper, flexRender, getCoreRowModel, useReactTable } from "@tanstack/react-table";
 import { cn, formatQubicAmount } from "@/utils";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { motion } from "framer-motion";
 
 interface OrderTableProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -25,7 +25,7 @@ const OrderTable: React.FC<OrderTableProps> = ({
   showHeader = true,
   ...props
 }) => {
-  const columnHelper = createColumnHelper<EntityOrder>();
+  const columnHelper = createColumnHelper<EntityOrder & { cumVolume: number }>();
 
   // Add cumulative volume calculation
   const [processedOrders, setProcessedOrders] = useState<(EntityOrder & { cumVolume: number })[]>([]);
@@ -41,7 +41,7 @@ const OrderTable: React.FC<OrderTableProps> = ({
     // Calculate cumulative volume
     let cumVolume = 0;
     const processed = sortedData.map((order) => {
-      cumVolume += order.numberOfShares;
+      cumVolume += Number(order.price) * Number(order.numberOfShares);
       return {
         ...order,
         cumVolume,
@@ -66,20 +66,24 @@ const OrderTable: React.FC<OrderTableProps> = ({
       header: "Quantity",
       cell: (info) => <div className="text-right">{info.getValue().toLocaleString()}</div>,
     }),
-    columnHelper.accessor((row) => row.price * row.numberOfShares, {
-      id: "total",
-      header: "Total",
-      cell: (info) => <div className="text-right">{formatQubicAmount(info.getValue())}</div>,
-    }),
+    columnHelper.accessor(
+      (row) => {
+        if (showCumulativeVolume) {
+          return row.cumVolume;
+        }
+        return row.price * row.numberOfShares;
+      },
+      {
+        id: "total",
+        header: "Total",
+        cell: (info) => <div className="text-right">{formatQubicAmount(info.getValue())}</div>,
+      },
+    ),
   ];
 
-  // const totalVolume = useMemo(() => {
-  //   return orders.reduce((acc, order) => acc + order.price * order.numberOfShares, 0);
-  // }, [orders]);
-
-  // const maxCumVolume = useMemo(() => {
-  //   return processedOrders.length > 0 ? processedOrders[processedOrders.length - 1].cumVolume : 0;
-  // }, [processedOrders]);
+  const maxCumVolume = useMemo(() => {
+    return processedOrders.length > 0 ? processedOrders[processedOrders.length - 1].cumVolume : 0;
+  }, [processedOrders]);
 
   const table = useReactTable({
     data: processedOrders,
@@ -130,26 +134,26 @@ const OrderTable: React.FC<OrderTableProps> = ({
         transition={{ duration: 0.2 }}
       >
         {table.getRowModel().rows.map((row) => {
-          // const rowVolume = row.original.price * row.original.numberOfShares;
-          // const rowData = row.original as EntityOrder & { cumVolume: number };
+          const rowVolume = row.original.price * row.original.numberOfShares;
+          const rowData = row.original as EntityOrder & { cumVolume: number };
 
           // Calculate background width based on either individual volume or cumulative volume
-          // const bgWidth = showCumulativeVolume
-          //   ? (rowData.cumVolume / maxCumVolume) * 100
-          //   : (rowVolume / totalVolume) * 100;
+          const bgWidth = showCumulativeVolume
+            ? (rowData.cumVolume / maxCumVolume) * 100
+            : (rowVolume / maxCumVolume) * 100;
 
           return (
             <motion.div
               key={row.id}
-              className="flex w-full px-2 text-xs transition-colors duration-150 cursor-pointer hover:bg-muted"
+              className="flex w-full cursor-pointer px-2 text-xs transition-colors duration-150 hover:!bg-muted"
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.1, delay: row.index * 0.02 }}
-              // style={{
-              //   background: `linear-gradient(to left, ${
-              //     type === "ask" ? "rgba(255, 0, 0, 0.1)" : "rgba(0, 255, 0, 0.1)"
-              //   } ${bgWidth}%, transparent ${bgWidth}%)`,
-              // }}
+              style={{
+                background: `linear-gradient(to left, ${
+                  type === "ask" ? "rgba(255, 0, 0, 0.1)" : "rgba(0, 255, 0, 0.1)"
+                } ${bgWidth}%, transparent ${bgWidth}%)`,
+              }}
               onClick={() => handleRowClick(Number(row.original.price))}
             >
               {row.getVisibleCells().map((cell) => (

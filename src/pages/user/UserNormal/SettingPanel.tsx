@@ -10,7 +10,7 @@ const SettingPanel: React.FC = () => {
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
+      {/* <div className="flex items-center justify-between">
         <div className="space-y-0.5">
           <Label htmlFor="emailNotifications" className="font-medium">
             Email Notifications
@@ -23,7 +23,7 @@ const SettingPanel: React.FC = () => {
           onCheckedChange={(checked) => setSettings({ notifications: checked })}
         />
       </div>
-      <Separator />
+      <Separator /> */}
       <div className="flex items-center justify-between">
         <div className="space-y-0.5">
           <Label htmlFor="darkMode" className="font-medium">

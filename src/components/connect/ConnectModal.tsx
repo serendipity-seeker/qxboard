@@ -1,23 +1,21 @@
-import { useState, useContext, useEffect } from "react";
-// @ts-ignore
-import { QubicVault } from "@qubic-lib/qubic-ts-vault-library";
-// @ts-ignore
-import { Card } from "../ui/card";
-// @ts-ignore
-import { Button } from "../ui/button";
-import { useQubicConnect } from "./QubicConnectContext";
-import QubicConnectLogo from "@/assets/qubic-connect.svg";
+import MetaMaskLogo from "@/assets/metamask.svg";
 import QubicConnectLogoDark from "@/assets/qubic-connect-dark.svg";
+import QubicConnectLogo from "@/assets/qubic-connect.svg";
+import WalletConnectLogo from "@/assets/wallet-connect.svg";
+import { generateQRCode } from "@/utils/index.ts";
+import { QubicVault } from "@qubic-lib/qubic-ts-vault-library/src/vault";
+import { AnimatePresence, motion } from "framer-motion";
+import { AlertTriangle } from "lucide-react";
+import { useContext, useEffect, useState } from "react";
+import { IoClose } from "react-icons/io5";
+import { Button } from "../ui/button";
+import { Card } from "../ui/card";
+import { Input } from "../ui/input";
 import { HeaderButtons } from "./Buttons";
 import { MetaMaskContext } from "./MetamaskContext.tsx";
+import { useQubicConnect } from "./QubicConnectContext";
 import { Account } from "./types";
-import MetaMaskLogo from "@/assets/metamask.svg";
 import { useWalletConnect } from "./WalletConnectContext.tsx";
-import { generateQRCode } from "@/utils/index.ts";
-import WalletConnectLogo from "@/assets/wallet-connect.svg";
-import { motion, AnimatePresence } from "framer-motion";
-import { IoClose } from "react-icons/io5";
-import { AlertTriangle } from "lucide-react";
 
 export enum MetamaskActions {
   SetInstalled = "SetInstalled",
@@ -96,9 +94,9 @@ const ConnectModal = ({ open, onClose, darkMode }: { open: boolean; onClose: () 
     setPrivateSeed(pk);
   };
 
-  const selectAccount = () => {
+  const selectAccount = async () => {
     // get the first account of the vault
-    const pkSeed = vault.revealSeed(accounts[parseInt(selectedAccount.toString())]?.publicId);
+    const pkSeed = await vault.revealSeed(accounts[parseInt(selectedAccount.toString())]?.publicId);
     connect({
       connectType: "vaultFile",
       publicKey: accounts[parseInt(selectedAccount.toString())]?.publicId,
@@ -201,30 +199,23 @@ const ConnectModal = ({ open, onClose, darkMode }: { open: boolean; onClose: () 
 
                 {selectedMode === "private-seed" && (
                   <motion.div
-                    className="mt-4"
+                    className="mt-4 space-y-2"
                     variants={contentVariants}
                     initial="hidden"
                     animate="visible"
                     exit="exit"
                   >
                     Your 55 character private key (seed):
-                    <input
-                      type="text"
-                      className="mt-4 w-full rounded-lg border-2 border-gray-300 bg-background p-4 text-foreground"
-                      value={privateSeed}
-                      onChange={(e) => privateKeyValidate(e.target.value)}
-                    />
+                    <Input type="text" value={privateSeed} onChange={(e) => privateKeyValidate(e.target.value)} />
                     {errorMsgPrivateSeed && <p className="text-red-500">{errorMsgPrivateSeed}</p>}
-                    <div className="mt-4 grid grid-cols-2 gap-4">
-                      <Button variant="default" className="mt-4" onClick={() => setSelectedMode("none")}>
+                    <div className="grid grid-cols-2 gap-4">
+                      <Button variant="default" onClick={() => setSelectedMode("none")}>
                         Cancel
                       </Button>
                       <Button
                         variant="default"
-                        className="mt-4"
                         onClick={() => {
                           privateKeyConnect(privateSeed);
-                          // reset and close
                           setSelectedMode("none");
                           setPrivateSeed("");
                           onClose();
@@ -238,31 +229,21 @@ const ConnectModal = ({ open, onClose, darkMode }: { open: boolean; onClose: () 
 
                 {selectedMode === "vault-file" && (
                   <motion.div
-                    className="mt-4"
+                    className="mt-4 space-y-2"
                     variants={contentVariants}
                     initial="hidden"
                     animate="visible"
                     exit="exit"
                   >
                     Load your Qubic vault file:
-                    <input
-                      type="file"
-                      className="mt-4 w-full rounded-lg border-2 border-gray-300 bg-background p-4 text-foreground"
-                      onChange={handleFileChange}
-                    />
-                    <input
-                      type="password"
-                      className="mt-4 w-full rounded-lg border-2 border-gray-300 bg-background p-4 text-foreground"
-                      placeholder="Enter password"
-                      onChange={handlePasswordChange}
-                    />
-                    <div className="mt-4 grid grid-cols-2 gap-4">
-                      <Button variant="default" className="mt-4" onClick={() => setSelectedMode("none")}>
+                    <Input type="file" onChange={handleFileChange} />
+                    <Input type="password" placeholder="Enter password" onChange={handlePasswordChange} />
+                    <div className="grid grid-cols-2 gap-4">
+                      <Button variant="default" onClick={() => setSelectedMode("none")}>
                         Cancel
                       </Button>
                       <Button
                         variant="default"
-                        className="mt-4"
                         onClick={async () => {
                           if (!selectedFile) {
                             alert("Please select a file.");

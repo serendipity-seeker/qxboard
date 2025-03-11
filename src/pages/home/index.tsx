@@ -84,11 +84,11 @@ const Home: React.FC = () => {
         </div>
 
         {/* Right column - Orderbook, Order Form */}
-        <div className="flex w-full flex-col gap-1 md:gap-2 lg:w-1/4">
-          <Card className="min-h-[400px] flex-grow text-xs md:min-h-0">
+        <div className="lg:w-1/4">
+          <Card className="min-h-[400px] flex-grow text-xs lg:h-[620px]">
             <Orderbook />
           </Card>
-          <Card className="p-1 md:p-2">
+          <Card className="h-[380px] p-1 md:p-2">
             <OrderForm />
           </Card>
         </div>

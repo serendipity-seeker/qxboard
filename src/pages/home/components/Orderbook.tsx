@@ -133,7 +133,7 @@ const Orderbook: React.FC<OrderbookProps> = ({ className, ...props }) => {
   };
 
   return (
-    <div className={cn("flex h-full w-full flex-col", className)} {...props}>
+    <div className={cn("flex h-full w-full flex-col overflow-hidden", className)} {...props}>
       <div className="flex items-center justify-between p-2 px-2">
         <h3 className="text-sm font-medium">Orderbook</h3>
         <Button variant="secondary" size="icon" className="h-8 w-8" onClick={onOpen}>
@@ -149,13 +149,13 @@ const Orderbook: React.FC<OrderbookProps> = ({ className, ...props }) => {
       </div>
 
       {/* Main content with flex layout */}
-      <div ref={mainContentRef} className="flex w-full flex-1 flex-col">
+      <div className="flex flex-1 h-[500px] w-full flex-col">
         {/* Ask orders - 42.5% height */}
         <OrderTable
           orders={groupedAskOrders}
           type="ask"
           id="ask-table"
-          className={`flex-1 overflow-hidden h-[calc(${mainContentRef.current?.clientHeight}px-${midPriceRef.current?.clientHeight}px)]`}
+          className={`flex-1 overflow-hidden`}
           onSelectPrice={handleSelectPrice}
           maxItems={settings.maxItems}
           showCumulativeVolume={settings.showCumulativeVolume}
@@ -163,7 +163,7 @@ const Orderbook: React.FC<OrderbookProps> = ({ className, ...props }) => {
         />
 
         {/* Middle price section - fixed height */}
-        <div ref={midPriceRef} className="flex w-full items-center justify-between border-y bg-background/50 px-4 py-1">
+        <div className="flex w-full items-center justify-between border-y bg-background/50 px-4 py-1">
           <div className="text-xs text-muted-foreground">Last Price</div>
           <div className="text-sm font-semibold">
             {action.curPairLatestTradePrice ? action.curPairLatestTradePrice.toLocaleString() : "Loading..."} QUBIC
@@ -175,7 +175,7 @@ const Orderbook: React.FC<OrderbookProps> = ({ className, ...props }) => {
           orders={groupedBidOrders}
           type="bid"
           id="bid-table"
-          className={`flex-1 overflow-hidden h-[calc(100%-${midPriceRef.current?.clientHeight}px)]`}
+          className={`flex-1 overflow-hidden`}
           onSelectPrice={handleSelectPrice}
           maxItems={settings.maxItems}
           showCumulativeVolume={settings.showCumulativeVolume}

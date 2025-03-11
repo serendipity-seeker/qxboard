@@ -5,39 +5,36 @@ import type { MetamaskState } from "./MetamaskContext";
 
 import type { Snap } from "./types";
 import { isLocalSnap } from "./utils/snap";
+import { Button } from "../ui/button";
 
 export const shouldDisplayReconnectButton = (installedSnap?: Snap) => installedSnap && isLocalSnap(installedSnap?.id);
 
-const btnClasses = "bg-primary-40 p-3 rounded-lg text-black flex items-center justify-center gap-3 disabled:bg-gray-40";
-
 export const InstallButton = () => (
-  <button className={btnClasses} onClick={() => (window.location.href = "https://metamask.io/")}>
+  <Button onClick={() => (window.location.href = "https://metamask.io/")}>
     <MetaMaskLogo />
     Install MetaMask
-  </button>
+  </Button>
 );
 
 export const ConnectButton = (props: any) => {
   return (
-    <button className={btnClasses} onClick={props.onClick}>
+    <Button onClick={props.onClick}>
       {props.isFlask ? <MetaMaskFlaskLogo /> : <MetaMaskLogo />}
       Connect
-    </button>
+    </Button>
   );
 };
 
 export const ReconnectButton = (props: any) => {
   return (
-    <button className={btnClasses} onClick={props.onClick}>
+    <Button onClick={props.onClick}>
       <MetaMaskFlaskLogo />
       Reconnect
-    </button>
+    </Button>
   );
 };
 
 export const HeaderButtons = ({ state, onConnectClick }: { state: MetamaskState; onConnectClick(): unknown }) => {
-  console.log("state", state);
-
   if (!state.snapsDetected && !state.installedSnap) {
     return <InstallButton />;
   }
@@ -51,8 +48,8 @@ export const HeaderButtons = ({ state, onConnectClick }: { state: MetamaskState;
   }
 
   return (
-    <button disabled className={btnClasses}>
+    <Button disabled>
       <MetaMaskLogo /> Connected
-    </button>
+    </Button>
   );
 };

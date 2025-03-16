@@ -18,26 +18,28 @@ const Header: React.FC = () => {
       initial={{ opacity: 0, y: -20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      className="border-card-border fixed top-0 z-10 flex h-[56px] w-full flex-wrap items-center justify-between border-b border-solid bg-background px-4 sm:px-6"
+      className="border-card-border fixed top-0 z-10 w-full border-b border-solid bg-background px-4 sm:px-6"
     >
-      <Link
-        to="/"
-        className="flex items-center gap-2 text-foreground transition-all duration-300 hover:scale-[103%] hover:no-underline hover:opacity-80"
-      >
-        <img src={settings.darkMode ? "/logo-light.png" : "/logo-dark.png"} alt="Logo" className="h-10" />
-      </Link>
-
-      <div className="flex items-center gap-2">
-        <Link to="/account" className="rounded-lg border-none bg-transparent p-2 text-foreground transition-colors">
-          <UserIcon size={20} />
-        </Link>
-        <button
-          onClick={toggleDarkMode}
-          className="rounded-lg border-none bg-transparent p-2 transition-colors hover:text-primary"
+      <div className="container mx-auto flex h-[56px] w-full flex-wrap items-center justify-between">
+        <Link
+          to="/"
+          className="flex items-center gap-2 text-foreground transition-all duration-300 hover:scale-[103%] hover:no-underline hover:opacity-80"
         >
-          {settings.darkMode ? <MdLightMode size={20} /> : <MdDarkMode size={20} />}
-        </button>
-        <ConnectLink darkMode={settings.darkMode} />
+          <img src={settings.darkMode ? "/logo-light.png" : "/logo-dark.png"} alt="Logo" className="h-10" />
+        </Link>
+
+        <div className="flex items-center gap-2">
+          <Link to="/account" className="rounded-lg border-none bg-transparent p-2 text-foreground transition-colors">
+            <UserIcon size={20} />
+          </Link>
+          <button
+            onClick={toggleDarkMode}
+            className="rounded-lg border-none bg-transparent p-2 transition-colors hover:text-primary"
+          >
+            {settings.darkMode ? <MdLightMode size={20} /> : <MdDarkMode size={20} />}
+          </button>
+          <ConnectLink darkMode={settings.darkMode} />
+        </div>
       </div>
     </motion.div>
   );

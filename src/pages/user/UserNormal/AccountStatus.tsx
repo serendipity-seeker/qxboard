@@ -25,7 +25,7 @@ const AccountStatus: React.FC<AccountStatusProps> = ({ address }) => {
 
   if (!address) {
     return (
-      <Card className="border-0 bg-muted p-4 shadow-sm">
+      <Card className="border-0 bg-transparent p-4 shadow-sm">
         <CardContent className="p-0 text-center">
           <div className="flex items-center justify-center gap-2">
             <FaUnlink className="text-muted-foreground" />
@@ -41,7 +41,7 @@ const AccountStatus: React.FC<AccountStatusProps> = ({ address }) => {
   const outgoingTransfers = Number(balance?.numberOfOutgoingTransfers) || 0;
 
   return (
-    <Card className="border-0 bg-muted shadow-sm">
+    <Card className="border-0 bg-transparent shadow-sm">
       <CardContent className="p-4">
         <div className="flex flex-wrap items-center gap-4 text-sm">
           <div className="flex items-center gap-2">

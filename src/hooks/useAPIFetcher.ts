@@ -14,10 +14,9 @@ const useAPIFetcher = () => {
   const [refetch] = useAtom(refetchAtom);
 
   useEffect(() => {
-    if (!wallet?.publicKey) return;
     const fetchData = async () => {
       const assets = await fetchAssets();
-      const balance = await fetchOwnedAssets(wallet.publicKey);
+      const balance = await fetchOwnedAssets(wallet?.publicKey || "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFXIB");
       setAssets(assets.map((asset) => ({ ...asset, balance: balance.get(asset.name) || 0 })));
     };
     fetchData();

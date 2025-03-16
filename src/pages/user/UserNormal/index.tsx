@@ -27,9 +27,10 @@ const UserNormal: React.FC = () => {
   const address = wallet?.publicKey;
 
   useEffect(() => {
-    const fetchOrders = async () => {
-      if (!address) return;
+    if (!address) return;
 
+    const fetchOrders = async () => {
+      setLoading(true);
       setLoading(true);
       try {
         const entityId = address;
@@ -117,10 +118,13 @@ const UserNormal: React.FC = () => {
   return (
     <div className="container mx-auto min-h-screen px-4 py-2">
       <Card className="mx-auto w-full max-w-4xl border-0 shadow-lg">
-        <CardHeader className="space-y-2 rounded-t-lg bg-gradient-to-r from-blue-50 to-indigo-50 p-4 dark:from-blue-950/30 dark:to-indigo-950/30">
-          <CardTitle className="text-2xl font-bold">User Dashboard</CardTitle>
-          <AccountStatus address={address || ""} />
-        </CardHeader>
+        <div className="p-4">
+          <CardHeader className="space-y-2 rounded-t-lg bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950/30 dark:to-indigo-950/30">
+            <CardTitle className="text-2xl font-bold">Account</CardTitle>
+            <AccountStatus address={address || ""} />
+          </CardHeader>
+        </div>
+
         <CardContent className="p-4">
           <Tabs defaultValue="settings" onValueChange={setActiveTab} className="w-full">
             <TabsList className="mb-8 grid w-full grid-cols-2 gap-2 rounded-lg p-1">
@@ -147,31 +151,36 @@ const UserNormal: React.FC = () => {
                 </CardContent>
               </Card>
             </TabsContent>
-
             <TabsContent value="activity" className="space-y-6">
-              <div className="space-y-8">
-                <Card className="overflow-hidden border-0 shadow-sm">
-                  <CardHeader className="border-b">
-                    <CardTitle className="flex items-center gap-2 text-lg font-medium">
-                      <MdOutlineShoppingCart className="h-5 w-5 text-blue-600" />
-                      Your Open Orders
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="p-4">{renderOrders()}</CardContent>
-                </Card>
+              {address ? (
+                <div className="space-y-8">
+                  <Card className="overflow-hidden border-0 shadow-sm">
+                    <CardHeader className="border-b">
+                      <CardTitle className="flex items-center gap-2 text-lg font-medium">
+                        <MdOutlineShoppingCart className="h-5 w-5 text-blue-600" />
+                        Your Open Orders
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="p-4">{renderOrders()}</CardContent>
+                  </Card>
 
-                <Card className="overflow-hidden border-0 shadow-sm">
-                  <CardHeader className="border-b">
-                    <CardTitle className="flex items-center gap-2 text-lg font-medium">
-                      <MdOutlineReceiptLong className="h-5 w-5 text-blue-600" />
-                      Trade History
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="p-4">
-                    <UserTradeHistory address={address || ""} />
-                  </CardContent>
-                </Card>
-              </div>
+                  <Card className="overflow-hidden border-0 shadow-sm">
+                    <CardHeader className="border-b">
+                      <CardTitle className="flex items-center gap-2 text-lg font-medium">
+                        <MdOutlineReceiptLong className="h-5 w-5 text-blue-600" />
+                        Trade History
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="p-4">
+                      <UserTradeHistory address={address || ""} />
+                    </CardContent>
+                  </Card>
+                </div>
+              ) : (
+                <div className="flex items-center justify-center py-8">
+                  <p className="text-gray-500">Please connect your wallet to view your activity</p>
+                </div>
+              )}
             </TabsContent>
           </Tabs>
         </CardContent>

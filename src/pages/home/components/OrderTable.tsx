@@ -1,8 +1,8 @@
 import { EntityOrder } from "@/types";
-import { createColumnHelper, flexRender, getCoreRowModel, useReactTable } from "@tanstack/react-table";
 import { cn, formatQubicAmount } from "@/utils";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { createColumnHelper, flexRender, getCoreRowModel, useReactTable } from "@tanstack/react-table";
 import { motion } from "framer-motion";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 interface OrderTableProps extends React.HTMLAttributes<HTMLDivElement> {
   orders: EntityOrder[];
@@ -64,7 +64,7 @@ const OrderTable: React.FC<OrderTableProps> = ({
     }),
     columnHelper.accessor("numberOfShares", {
       header: "Quantity",
-      cell: (info) => <div className="text-right">{info.getValue().toLocaleString()}</div>,
+      cell: (info) => <div className="text-right px-1">{info.getValue().toLocaleString()}</div>,
     }),
     columnHelper.accessor(
       (row) => {
@@ -145,7 +145,7 @@ const OrderTable: React.FC<OrderTableProps> = ({
           return (
             <motion.div
               key={row.id}
-              className="flex w-full cursor-pointer px-2 text-xs transition-colors duration-150 hover:!bg-muted"
+              className="flex w-full cursor-pointer gap-1 px-2 text-xs transition-colors duration-150 hover:!bg-muted"
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.1, delay: row.index * 0.02 }}
@@ -157,7 +157,7 @@ const OrderTable: React.FC<OrderTableProps> = ({
               onClick={() => handleRowClick(Number(row.original.price))}
             >
               {row.getVisibleCells().map((cell) => (
-                <div key={cell.id} className="flex-1">
+                <div key={cell.id} className="flex-1" style={{ minWidth: 0 }}>
                   {flexRender(cell.column.columnDef.cell, cell.getContext())}
                 </div>
               ))}

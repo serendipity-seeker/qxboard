@@ -128,11 +128,11 @@ const UserNormal: React.FC = () => {
         <CardContent className="p-4">
           <Tabs defaultValue="settings" onValueChange={setActiveTab} className="w-full">
             <TabsList className="mb-8 grid w-full grid-cols-2 gap-2 rounded-lg p-1">
-              <TabsTrigger value="settings" className="flex items-center gap-2 bg-secondary">
+              <TabsTrigger value="settings" className="flex items-center gap-2">
                 <FiSettings className="h-4 w-4" />
                 Settings
               </TabsTrigger>
-              <TabsTrigger value="activity" className="flex items-center gap-2 bg-secondary">
+              <TabsTrigger value="activity" className="flex items-center gap-2">
                 <BiHistory className="h-4 w-4" />
                 Activity
               </TabsTrigger>

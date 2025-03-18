@@ -4,6 +4,7 @@ import { Switch } from "@/components/ui/switch";
 import { Slider } from "@/components/ui/slider";
 import { useAtom } from "jotai";
 import { settingsAtom } from "@/store/settings";
+import ThemeSelector from "./ThemeSelector";
 
 const SettingPanel: React.FC = () => {
   const [settings, setSettings] = useAtom(settingsAtom);
@@ -37,6 +38,8 @@ const SettingPanel: React.FC = () => {
           onCheckedChange={(checked) => setSettings({ darkMode: checked })}
         />
       </div>
+
+      <ThemeSelector />
       <Separator />
       <div className="space-y-2">
         <div className="flex items-center justify-between">

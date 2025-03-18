@@ -108,13 +108,13 @@ const OrderForm: React.FC<OrderFormProps> = ({ className, ...props }) => {
           <TabsList className="mb-2 grid w-full grid-cols-2">
             <TabsTrigger
               value="buy"
-              className={cn("bg-secondary data-[state=active]:bg-success-40 data-[state=active]:text-white")}
+              className={cn("data-[state=active]:bg-success-40 data-[state=active]:text-white")}
             >
               Buy
             </TabsTrigger>
             <TabsTrigger
               value="sell"
-              className={cn("bg-secondary data-[state=active]:bg-error-40 data-[state=active]:text-white")}
+              className={cn("data-[state=active]:bg-error-40 data-[state=active]:text-white")}
             >
               Sell
             </TabsTrigger>

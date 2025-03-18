@@ -29,7 +29,10 @@ const Header: React.FC = () => {
         </Link>
 
         <div className="flex items-center gap-2">
-          <Link to="/account" className="rounded-lg border-none bg-transparent p-2 text-foreground transition-colors">
+          <Link
+            to="/account"
+            className="rounded-lg border-none bg-transparent p-2 text-foreground transition-colors hover:text-primary"
+          >
             <UserIcon size={20} />
           </Link>
           <button

@@ -1,4 +1,4 @@
-import { cn } from "@/utils";
+import { cn, getCssVariableAsRgb } from "@/utils";
 import type { ChartOptions, DeepPartial, IChartApi, ISeriesApi, SingleValueData, SolidColor } from "lightweight-charts";
 import { createChart, HistogramSeries, LineSeries, CrosshairMode, PriceScaleMode } from "lightweight-charts";
 import { useEffect, useRef, useState } from "react";
@@ -23,64 +23,6 @@ type Props = Readonly<{
   HeaderComponent?: React.ReactElement;
 }>;
 
-// Create the chart instance
-const CHART_OPTIONS: DeepPartial<ChartOptions> = {
-  layout: {
-    textColor: "#707A8A",
-    attributionLogo: false,
-    background: { type: "solid", color: "#151E27" } as SolidColor,
-  },
-  rightPriceScale: { visible: true, borderVisible: false },
-  leftPriceScale: { visible: true, borderVisible: false },
-  grid: {
-    vertLines: {
-      color: "#2B3A4A",
-      style: 1,
-      visible: true,
-    },
-    horzLines: {
-      color: "#2B3A4A",
-      style: 1,
-      visible: true,
-    },
-  },
-  crosshair: {
-    mode: CrosshairMode.Normal,
-    vertLine: {
-      width: 1,
-      color: "#3b82f6",
-      style: 1,
-      labelBackgroundColor: "#3b82f6",
-    },
-    horzLine: {
-      width: 1,
-      color: "#3b82f6",
-      style: 1,
-      labelBackgroundColor: "#3b82f6",
-    },
-  },
-  timeScale: {
-    borderVisible: false,
-    timeVisible: true,
-    secondsVisible: false,
-  },
-};
-
-const LIGHT_THEME = {
-  layout: {
-    textColor: "#333",
-    background: { type: "solid", color: "#ffffff" } as SolidColor,
-  },
-  grid: {
-    vertLines: {
-      color: "#f0f0f0",
-    },
-    horzLines: {
-      color: "#f0f0f0",
-    },
-  },
-};
-
 // Chart type icon mapping
 const chartTypeIcons = {
   line: <LineChart size={16} />,
@@ -102,6 +44,69 @@ export default function LightweightChart({
   theme = "dark",
   HeaderComponent,
 }: Props) {
+  const primaryColor = getCssVariableAsRgb("--primary");
+  const secondaryColor = getCssVariableAsRgb("--secondary");
+  const backgroundColor = getCssVariableAsRgb("--background");
+  const textColor = getCssVariableAsRgb("--foreground");
+
+  // Create the chart instance
+  const CHART_OPTIONS: DeepPartial<ChartOptions> = {
+    layout: {
+      textColor,
+      attributionLogo: false,
+      background: { type: "solid", color: backgroundColor } as SolidColor,
+    },
+    rightPriceScale: { visible: true, borderVisible: false },
+    leftPriceScale: { visible: true, borderVisible: false },
+    grid: {
+      vertLines: {
+        color: "#2B3A4A",
+        style: 1,
+        visible: true,
+      },
+      horzLines: {
+        color: "#2B3A4A",
+        style: 1,
+        visible: true,
+      },
+    },
+    crosshair: {
+      mode: CrosshairMode.Normal,
+      vertLine: {
+        width: 1,
+        color: "#3b82f6",
+        style: 1,
+        labelBackgroundColor: "#3b82f6",
+      },
+      horzLine: {
+        width: 1,
+        color: "#3b82f6",
+        style: 1,
+        labelBackgroundColor: "#3b82f6",
+      },
+    },
+    timeScale: {
+      borderVisible: false,
+      timeVisible: true,
+      secondsVisible: false,
+    },
+  };
+
+  const LIGHT_THEME = {
+    layout: {
+      textColor: "#333",
+      background: { type: "solid", color: "#ffffff" } as SolidColor,
+    },
+    grid: {
+      vertLines: {
+        color: "#f0f0f0",
+      },
+      horzLines: {
+        color: "#f0f0f0",
+      },
+    },
+  };
+
   const chartContainerRef = useRef<HTMLDivElement | null>(null);
   const chartRef = useRef<IChartApi | null>(null);
   const priceSeriesRef = useRef<ISeriesApi<"Line"> | null>(null);
@@ -137,12 +142,12 @@ export default function LightweightChart({
     const priceSeries = chart.addSeries(LineSeries);
     priceSeries.applyOptions({
       lineWidth: 2,
-      color: "#3b82f6",
+      color: primaryColor,
       priceFormat: { type: "price", precision: 1, minMove: 0.1 },
       lastValueVisible: true,
       priceLineVisible: true,
       priceLineWidth: 1,
-      priceLineColor: "#3b82f6",
+      priceLineColor: primaryColor,
       priceLineStyle: 2,
     });
     priceSeries.priceScale().applyOptions({
@@ -157,7 +162,7 @@ export default function LightweightChart({
     volumeSeries.applyOptions({
       priceFormat: { type: "volume" },
       priceScaleId: "left",
-      color: "#1e293b",
+      color: secondaryColor,
       base: 0,
     });
     volumeSeries.priceScale().applyOptions({
@@ -255,7 +260,7 @@ export default function LightweightChart({
   return (
     <div className={cn("relative flex h-full w-full flex-col", className)}>
       {/* Chart Header */}
-      <div className="flex items-center justify-between border-b border-gray-200 pt-0 pb-2 dark:border-gray-800">
+      <div className="flex items-center justify-between border-b border-gray-200 pb-2 pt-0 dark:border-gray-800">
         <div className="flex flex-col">
           <div className="flex items-center gap-2">
             <h3 className="text-lg font-semibold">{symbol}</h3>

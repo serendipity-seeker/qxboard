@@ -50,3 +50,80 @@ export const valueOfAssetName = (asset: string): bigint => {
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
+
+export function getCssVariable(variableName: string): string {
+  const rootStyle = getComputedStyle(document.documentElement);
+  return rootStyle.getPropertyValue(variableName).trim();
+}
+
+function hslToRgb(h: number, s: number, l: number): { r: number; g: number; b: number } {
+  h = h % 360; // Ensure hue is within 0-359
+  s = s / 100; // Convert saturation to a decimal
+  l = l / 100; // Convert lightness to a decimal
+
+  const c = (1 - Math.abs(2 * l - 1)) * s;
+  const x = c * (1 - Math.abs(((h / 60) % 2) - 1));
+  const m = l - c / 2;
+
+  let r = 0,
+    g = 0,
+    b = 0;
+
+  if (h >= 0 && h < 60) {
+    r = c;
+    g = x;
+    b = 0;
+  } else if (h >= 60 && h < 120) {
+    r = x;
+    g = c;
+    b = 0;
+  } else if (h >= 120 && h < 180) {
+    r = 0;
+    g = c;
+    b = x;
+  } else if (h >= 180 && h < 240) {
+    r = 0;
+    g = x;
+    b = c;
+  } else if (h >= 240 && h < 300) {
+    r = x;
+    g = 0;
+    b = c;
+  } else if (h >= 300 && h < 360) {
+    r = c;
+    g = 0;
+    b = x;
+  }
+
+  return {
+    r: Math.round((r + m) * 255),
+    g: Math.round((g + m) * 255),
+    b: Math.round((b + m) * 255),
+  };
+}
+
+function rgbToHex(r: number, g: number, b: number): string {
+  const toHex = (value: number) => {
+    const hex = value.toString(16);
+    return hex.length === 1 ? "0" + hex : hex; // Ensure two digits
+  };
+
+  return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
+}
+
+function convertHslToHex(hslString: string): string {
+  const [h, s, l] = hslString.split(" ").map((value) => parseFloat(value));
+
+  if (isNaN(h) || isNaN(s) || isNaN(l)) {
+    throw new Error("Invalid HSL string format");
+  }
+
+  const { r, g, b } = hslToRgb(h, s, l);
+  return rgbToHex(r, g, b);
+}
+
+export function getCssVariableAsRgb(variableName: string): string {
+  const hslValue = getCssVariable(variableName);
+  const rgbValue = convertHslToHex(hslValue);
+  return rgbValue;
+}

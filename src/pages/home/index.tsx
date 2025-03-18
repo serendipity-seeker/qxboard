@@ -60,10 +60,10 @@ const Home: React.FC = () => {
           <Card className="min-h-[300px] overflow-auto p-2 text-xs md:h-1/4 md:min-h-0">
             <Tabs defaultValue="history" className="h-full w-full">
               <TabsList className="mb-2 flex w-full">
-                <TabsTrigger value="history" className="flex-1 bg-secondary">
+                <TabsTrigger value="history" className="flex-1">
                   Asset Trades
                 </TabsTrigger>
-                <TabsTrigger value="userOrders" className="flex-1 bg-secondary">
+                <TabsTrigger value="userOrders" className="flex-1">
                   My Orders
                 </TabsTrigger>
               </TabsList>

@@ -24,3 +24,33 @@ export const ISSUER = new Map<string, string>([
   ["VSTB001", "VALISTURNWYFQAMVLAKJVOKJQKKBXZZFEASEYCAGNCFMZARJEMMFSESEFOWM"],
 ]);
 
+export const THEME_LIST = [
+  {
+    label: "Default",
+    value: "default",
+  },
+  {
+    label: "UnTrue",
+    value: "untrue",
+  },
+  {
+    label: "Adj",
+    value: "adj",
+  },
+  {
+    label: "Purple Dark V2",
+    value: "purple-dark-v2",
+  },
+  {
+    label: "Midnight Tokyo",
+    value: "midnight-tokyo",
+  },
+  {
+    label: "Brutal",
+    value: "brutal",
+  },
+  {
+    label: "Rose",
+    value: "rose",
+  },
+];

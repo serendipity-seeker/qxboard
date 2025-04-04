@@ -1,6 +1,6 @@
-export const RPC_URL = "https://testrpc.qubicbay.io";
+export const RPC_URL = "https://rpc.qubicbay.io";
 
-export const API_URL = "https://testrpc.qubicbay.io";
+export const API_URL = "https://api.qubicbay.io";
 
 export const EXPLORER_URL = "https://explorer.qubic.org";
 

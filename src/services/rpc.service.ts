@@ -117,11 +117,20 @@ export const fetchAssetOrders = async (
   return data;
 };
 
-export const fetchOwnedAssets = async (id: string): Promise<any> => {
+export const fetchOwnedAssets = async (id: string, contractId = 1): Promise<any> => {
   try {
     const response = await fetch(`${API_URL}/v1/assets/${id}/owned`);
     const data = await response.json();
-    return new Map(data.ownedAssets.map((el: OwnedAsset) => [el.data.issuedAsset.name, el.data.numberOfUnits]));
+    return data.ownedAssets
+      .filter((el: OwnedAsset) => el.data.managingContractIndex === contractId)
+      .map((el: OwnedAsset) => {
+        return {
+          asset: el.data.issuedAsset.name,
+          amount: el.data.numberOfUnits,
+          issuerId: el.data.issuedAsset.issuerIdentity,
+          unitOfMeasurement: el.data.issuedAsset.unitOfMeasurement,
+        };
+      });
   } catch (error) {
     console.error("Error fetching owned assets:", error);
   }

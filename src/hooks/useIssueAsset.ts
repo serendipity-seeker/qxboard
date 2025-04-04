@@ -1,17 +1,19 @@
 import { useState, useEffect } from "react";
 import { useQubicConnect } from "@/components/connect/QubicConnectContext";
 import { issueAsset, getFees } from "@/services/qx.service";
-import { broadcastTx, fetchTickInfo, fetchTxStatus } from "@/services/rpc.service";
+import { broadcastTx, fetchBalance, fetchTickInfo, fetchOwnedAssets } from "@/services/rpc.service";
 import { valueOfAssetName } from "@/utils/base.utils";
 import toast from "react-hot-toast";
 import { useTxMonitor } from "@/store/txMonitor";
 import { useAtom } from "jotai";
 import { refetchAtom } from "@/store/action";
+import { settingsAtom } from "@/store/settings";
+import { assetsAtom } from "@/store/assets";
 
 export interface IssueAssetParams {
   assetName: string;
   numberOfShares: number;
-  unitOfMeasurement: string; // This will now be a string representation of the SI unit array
+  unitOfMeasurement: string;
   numberOfDecimalPlaces: number;
 }
 
@@ -30,7 +32,7 @@ export const SI_UNITS = {
 export const formatUnitOfMeasurement = (unitString: string): bigint => {
   // Default unit array (all zeros)
   const unitArray = [0, 0, 0, 0, 0, 0, 0];
-  
+
   // Parse the unit string and update the array
   // For predefined units, we'll use specific configurations
   switch (unitString) {
@@ -59,16 +61,16 @@ export const formatUnitOfMeasurement = (unitString: string): bigint => {
       break;
     // Add more predefined units as needed
   }
-  
+
   // Convert the array to a bigint using bit shifting
   // Each unit gets 8 bits, with values from -128 to 127
   let result = 0n;
   for (let i = 0; i < 7; i++) {
     // Convert to 8-bit signed integer and shift to the right position
-    const value = BigInt(unitArray[i] & 0xFF);
+    const value = BigInt(unitArray[i] & 0xff);
     result |= value << BigInt(i * 8);
   }
-  
+
   return result;
 };
 
@@ -78,6 +80,8 @@ export const useIssueAsset = () => {
   const [fees, setFees] = useState({ assetIssuanceFee: 0 });
   const { startMonitoring } = useTxMonitor();
   const [, setRefetch] = useAtom(refetchAtom);
+  const [settings] = useAtom(settingsAtom);
+  const [assets] = useAtom(assetsAtom);
 
   useEffect(() => {
     const loadFees = async () => {
@@ -98,10 +102,23 @@ export const useIssueAsset = () => {
       return;
     }
 
+    const balance = await fetchBalance(wallet.publicKey);
+    if (balance.balance < fees.assetIssuanceFee) {
+      toast.error("Insufficient balance");
+      return;
+    }
+
+    // check duplicate asset
+    const asset = assets.find((asset: any) => asset.name === data.assetName && asset.issuerId === wallet.publicKey);
+    if (asset) {
+      toast.error("Asset already exists");
+      return;
+    }
+
     setIsSubmitting(true);
     try {
       const tickInfo = await fetchTickInfo();
-      const targetTick = tickInfo.tick + 10;
+      const targetTick = tickInfo.tick + settings.tickOffset;
 
       const assetNameValue = valueOfAssetName(data.assetName);
       const unitOfMeasurementValue = formatUnitOfMeasurement(data.unitOfMeasurement);
@@ -117,8 +134,13 @@ export const useIssueAsset = () => {
       const res = await broadcastTx(signedTx.tx);
 
       const checker = async () => {
-        const txStatus = await fetchTxStatus(res.transactionId);
-        return txStatus;
+        const assets = await fetchOwnedAssets(wallet.publicKey);
+        return assets.some(
+          (asset: any) =>
+            asset.asset === data.assetName &&
+            asset.issuerId === wallet.publicKey &&
+            Number(asset.amount) === Number(data.numberOfShares),
+        );
       };
 
       if (res.transactionId) {

@@ -58,10 +58,13 @@ export const fetchQuerySC = async (query: IQuerySC): Promise<IQuerySCResponse> =
 };
 
 export const fetchTxStatus = async (txId: string): Promise<boolean> => {
-  const txStatusResult = await fetch(`${RPC_URL}/v2/transactions/${txId}`);
+  const txStatusResult = await fetch(`${RPC_URL}/v1/tx-status/${txId}`);
+  let txStatus = {} as { transactionStatus: TxStatus };
   if (txStatusResult.status == 200) {
-    const txStatus = await txStatusResult.json();
-    return txStatus.transaction;
+    txStatus = await txStatusResult.json();
+  }
+  if (txStatus.transactionStatus) {
+    return true;
   }
   return false;
 };

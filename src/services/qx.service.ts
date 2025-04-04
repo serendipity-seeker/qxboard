@@ -80,9 +80,9 @@ export const getFees = async (): Promise<IFees> => {
 };
 
 interface IssueAssetPayload {
-  assetName: number;
-  numberOfShares: number;
-  unitOfMeasurement: number;
+  assetName: bigint;
+  numberOfShares: bigint;
+  unitOfMeasurement: bigint;
   numberOfDecimalPlaces: number;
 }
 

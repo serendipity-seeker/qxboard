@@ -24,10 +24,6 @@ export function NotificationBell() {
   const [, clearAll] = useAtom(clearAllNotificationsAtom);
   const [isOpen, setIsOpen] = useState(false);
 
-  const toggleNotifications = () => {
-    setIsOpen(!isOpen);
-  };
-
   const handleMarkAsRead = (id: string) => {
     markAsRead(id);
   };

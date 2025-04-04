@@ -9,7 +9,6 @@ import { NotificationBell } from "@/components/NotificationBell";
 import { useState } from "react";
 import IssueAssetModal from "@/components/IssueAssetModal";
 import { useQubicConnect } from "@/components/connect/QubicConnectContext";
-import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 const Header: React.FC = () => {

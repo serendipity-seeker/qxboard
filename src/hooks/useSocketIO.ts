@@ -56,24 +56,22 @@ export function useSocketIO({
     // Listen for notifications
     socket.on("notification", (notification) => {
       console.log("Received notification:", notification);
-      
+
       // Add notification to store
       setNotifications((prev) => [notification, ...prev]);
-      
+
       // Show toast notification
-      toast(notification.message, {
-        icon: notification.type === "error" ? "❌" : notification.type === "warning" ? "⚠️" : "✅",
-      });
+      notification.type === "error" ? toast.error(notification.message) : toast.success(notification.message);
     });
 
     // Listen for trade updates
     socket.on("trade_update", (trade) => {
       console.log("Received trade update:", trade);
-      
+
       // Show toast notification for trade updates
-      toast(`Trade ${trade.id} ${trade.status}`, {
-        icon: trade.status === "completed" ? "✅" : trade.status === "failed" ? "❌" : "⏳",
-      });
+      trade.status === "completed"
+        ? toast.success(`Trade ${trade.id} completed`)
+        : toast.error(`Trade ${trade.id} failed`);
     });
 
     // Store socket reference
@@ -118,4 +116,4 @@ export function useSocketIO({
     connect,
     disconnect,
   };
-} 
+}

@@ -46,9 +46,9 @@ export const createQXOrderPayload = (
 ): QubicTransferQXOrderPayload => {
   return new QubicTransferQXOrderPayload({
     issuer: new PublicKey(issuer),
-    assetName: new Long(Number(valueOfAssetName(assetName))),
-    price: new Long(price),
-    numberOfShares: new Long(amount),
+    assetName: new Long(BigInt(valueOfAssetName(assetName))),
+    price: new Long(BigInt(price)),
+    numberOfShares: new Long(BigInt(amount)),
   });
 };
 

@@ -6,11 +6,9 @@ import { MdLightMode, MdDarkMode } from "react-icons/md";
 import { UserIcon } from "lucide-react";
 import { Link } from "react-router-dom";
 import { NotificationBell } from "@/components/NotificationBell";
-import { useNotificationSocket } from "@/hooks/useNotificationSocket";
 
 const Header: React.FC = () => {
   const [settings, setSettings] = useAtom(settingsAtom);
-  const { isConnected } = useNotificationSocket();
 
   const toggleDarkMode = () => {
     setSettings({ darkMode: !settings.darkMode });
@@ -46,9 +44,6 @@ const Header: React.FC = () => {
           </button>
           <ConnectLink darkMode={settings.darkMode} />
           <NotificationBell />
-          <div className="h-4 w-4 rounded-full bg-green-500">
-            {isConnected && <span className="sr-only">Connected</span>}
-          </div>
         </div>
       </div>
     </motion.div>

@@ -1,48 +1,31 @@
+import { useQubicConnect } from "@/components/connect/QubicConnectContext";
 import { useSocketIO } from "./useSocketIO";
 import { useEffect } from "react";
-import toast from "react-hot-toast";
 
 // Default server URL - should be configurable
-const DEFAULT_SOCKET_URL = import.meta.env.VITE_SOCKET_URL || "http://localhost:3000";
+const DEFAULT_SOCKET_URL = import.meta.env.VITE_SOCKET_URL || "http://localhost:3001";
 
 export function useNotificationSocket() {
-  const {
-    isConnected,
-    socket,
-    emit,
-    connect,
-    disconnect
-  } = useSocketIO({
+  const { isConnected, socket, emit, connect, disconnect } = useSocketIO({
     url: DEFAULT_SOCKET_URL,
     autoConnect: true,
-    onConnect: () => {
-      toast.success("Connected to notification server");
-    },
-    onDisconnect: () => {
-      toast.error("Disconnected from notification server");
-    },
-    onError: (error) => {
-      // toast.error(`Connection error: ${error.message}`);
-    }
   });
+
+  const { wallet } = useQubicConnect();
 
   // Subscribe to user-specific notifications when connected
   useEffect(() => {
-    if (isConnected && socket) {
-      // You can subscribe to specific channels or rooms here
-      // For example, if you have a user ID:
-      // const userId = "user123";
-      // emit("subscribe", { userId });
-      
+    if (isConnected && socket && wallet?.publicKey) {
+      emit("subscribe", { userId: wallet.publicKey });
       console.log("Subscribed to notifications");
     }
-  }, [isConnected, socket, emit]);
+  }, [isConnected, socket, wallet?.publicKey]);
 
   return {
     isConnected,
     socket,
     emit,
     connect,
-    disconnect
+    disconnect,
   };
-} 
+}

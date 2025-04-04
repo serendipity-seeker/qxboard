@@ -37,10 +37,7 @@ const App: React.FC = () => {
           <Toaster
             position="top-right"
             toastOptions={{
-              style: {
-                background: "#202E3C",
-                color: "#fff",
-              },
+              className: "!bg-card !text-card-foreground !border-border !border",
             }}
           />
         </QubicConnectProvider>

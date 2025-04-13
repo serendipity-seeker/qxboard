@@ -4,7 +4,7 @@ import { Button } from "./ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "./ui/dialog";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
+// import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
 import useIssueAsset, { IssueAssetParams } from "@/hooks/useIssueAsset";
 
 interface IssueAssetModalProps {
@@ -13,16 +13,15 @@ interface IssueAssetModalProps {
 }
 
 // Updated unit options with descriptions
-const UNIT_OPTIONS = [
-  { value: "0", label: "None", description: "No specific unit" },
-  { value: "1", label: "Piece", description: "Count of items" },
-  { value: "2", label: "Second", description: "Time (s)" },
-  { value: "3", label: "Byte", description: "Digital information" },
-  { value: "4", label: "Gram", description: "Mass (g)" },
-  { value: "5", label: "Meter", description: "Length (m)" },
-  { value: "6", label: "Joule", description: "Energy (kg·m²·s⁻²)" },
-  // Add more units as needed
-];
+// const UNIT_OPTIONS = [
+//   { value: "0", label: "None", description: "No specific unit" },
+//   { value: "1", label: "Piece", description: "Count of items" },
+//   { value: "2", label: "Second", description: "Time (s)" },
+//   { value: "3", label: "Byte", description: "Digital information" },
+//   { value: "4", label: "Gram", description: "Mass (g)" },
+//   { value: "5", label: "Meter", description: "Length (m)" },
+//   { value: "6", label: "Joule", description: "Energy (kg·m²·s⁻²)" },
+// ];
 
 const IssueAssetModal: React.FC<IssueAssetModalProps> = ({ open, onOpenChange }) => {
   const { issueNewAsset, isSubmitting, fees } = useIssueAsset();
@@ -32,8 +31,8 @@ const IssueAssetModal: React.FC<IssueAssetModalProps> = ({ open, onOpenChange })
     handleSubmit,
     reset,
     formState: { errors },
-    setValue,
-    watch,
+    // setValue,
+    // watch,
   } = useForm<IssueAssetParams>({
     defaultValues: {
       assetName: "",
@@ -54,9 +53,9 @@ const IssueAssetModal: React.FC<IssueAssetModalProps> = ({ open, onOpenChange })
     onOpenChange(false);
   };
 
-  const handleUnitChange = (value: string) => {
-    setValue("unitOfMeasurement", value);
-  };
+  // const handleUnitChange = (value: string) => {
+  //   setValue("unitOfMeasurement", value);
+  // };
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -108,7 +107,7 @@ const IssueAssetModal: React.FC<IssueAssetModalProps> = ({ open, onOpenChange })
               </div>
             </div>
 
-            <div className="grid grid-cols-4 items-center gap-4">
+            {/* <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="unitOfMeasurement" className="text-right">
                 Unit
               </Label>
@@ -129,7 +128,7 @@ const IssueAssetModal: React.FC<IssueAssetModalProps> = ({ open, onOpenChange })
                   </SelectContent>
                 </Select>
               </div>
-            </div>
+            </div> */}
 
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="numberOfDecimalPlaces" className="text-right">

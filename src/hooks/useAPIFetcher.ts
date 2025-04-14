@@ -20,12 +20,13 @@ const useAPIFetcher = () => {
         wallet?.publicKey || "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFXIB",
       );
       setAssets(
-        assets.map((asset) => ({
-          ...asset,
-          balance: balance.map((data: { asset: string; amount: string; issuerId: string; unitOfMeasurement: any }) =>
-            data.asset === asset.name ? Number(data.amount) : 0,
-          ),
-        })),
+        assets.map((asset) => {
+          const matchingBalance = balance.filter((data: { asset: string; amount: string; issuerId: string; unitOfMeasurement: any }) => data.asset === asset.name)
+          return {
+            ...asset,
+            balance: matchingBalance?.[0]?.amount || 0
+          }
+        }),
       );
     };
     fetchData();

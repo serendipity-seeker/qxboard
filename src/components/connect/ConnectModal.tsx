@@ -5,7 +5,7 @@ import WalletConnectLogo from "@/assets/wallet-connect.svg";
 import { generateQRCode } from "@/utils/index.ts";
 import { QubicVault } from "@qubic-lib/qubic-ts-vault-library/src/vault";
 import { AnimatePresence, motion } from "framer-motion";
-import { AlertTriangle } from "lucide-react";
+// import { AlertTriangle } from "lucide-react";
 import { useContext, useEffect, useState } from "react";
 import { IoClose } from "react-icons/io5";
 import { Button } from "../ui/button";

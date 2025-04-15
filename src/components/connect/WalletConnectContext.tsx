@@ -180,7 +180,7 @@ export function WalletConnectProvider({ children }: WalletConnectProviderProps) 
       metadata: {
         name: "QXBoard",
         description: "QXBoard",
-        url: "https://qxboard.com",
+        url: "https://www.qxboard.com",
         icons: ["https://walletconnect.com/walletconnect-logo.png"],
       },
     }).then((client) => {

@@ -157,6 +157,14 @@ export default function LightweightChart({
     priceSeries.setData(priceDataSeries);
     priceSeriesRef.current = priceSeries;
 
+    chartRef.current?.timeScale().fitContent();
+    chartRef.current?.timeScale().applyOptions({
+      minBarSpacing: 1,
+      fixLeftEdge: true,
+      fixRightEdge: true,
+      rightOffset: 0,
+    });
+
     // Create volume series
     const volumeSeries = chart.addSeries(HistogramSeries);
     volumeSeries.applyOptions({

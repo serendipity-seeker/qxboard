@@ -44,17 +44,19 @@ export default function LightweightChart({
   theme = "dark",
   HeaderComponent,
 }: Props) {
-  const primaryColor = getCssVariableAsRgb("--primary");
-  const secondaryColor = getCssVariableAsRgb("--secondary");
-  const backgroundColor = getCssVariableAsRgb("--background");
-  const textColor = getCssVariableAsRgb("--foreground");
+  const [colors, setColors] = useState({
+    primaryColor: getCssVariableAsRgb("--primary"),
+    secondaryColor: getCssVariableAsRgb("--secondary"),
+    backgroundColor: getCssVariableAsRgb("--background"),
+    textColor: getCssVariableAsRgb("--foreground"),
+  });
 
   // Create the chart instance
   const CHART_OPTIONS: DeepPartial<ChartOptions> = {
     layout: {
-      textColor,
+      textColor: colors.textColor,
       attributionLogo: false,
-      background: { type: "solid", color: backgroundColor } as SolidColor,
+      background: { type: "solid", color: colors.backgroundColor } as SolidColor,
     },
     rightPriceScale: { visible: true, borderVisible: false },
     leftPriceScale: { visible: true, borderVisible: false },
@@ -121,6 +123,13 @@ export default function LightweightChart({
   useEffect(() => {
     if (!chartContainerRef.current) return;
 
+    setColors({
+      primaryColor: getCssVariableAsRgb("--primary"),
+      secondaryColor: getCssVariableAsRgb("--secondary"),
+      backgroundColor: getCssVariableAsRgb("--background"),
+      textColor: getCssVariableAsRgb("--foreground"),
+    });
+
     const container = chartContainerRef.current;
     const parentElement = container.parentElement;
 
@@ -142,12 +151,12 @@ export default function LightweightChart({
     const priceSeries = chart.addSeries(LineSeries);
     priceSeries.applyOptions({
       lineWidth: 2,
-      color: primaryColor,
+      color: colors.primaryColor,
       priceFormat: { type: "price", precision: 1, minMove: 0.1 },
       lastValueVisible: true,
       priceLineVisible: true,
       priceLineWidth: 1,
-      priceLineColor: primaryColor,
+      priceLineColor: colors.primaryColor,
       priceLineStyle: 2,
     });
     priceSeries.priceScale().applyOptions({
@@ -170,7 +179,7 @@ export default function LightweightChart({
     volumeSeries.applyOptions({
       priceFormat: { type: "volume" },
       priceScaleId: "left",
-      color: secondaryColor,
+      color: colors.secondaryColor,
       base: 0,
     });
     volumeSeries.priceScale().applyOptions({

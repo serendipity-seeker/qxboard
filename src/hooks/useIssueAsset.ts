@@ -9,6 +9,7 @@ import { useAtom } from "jotai";
 import { refetchAtom } from "@/store/action";
 import { settingsAtom } from "@/store/settings";
 import { assetsAtom } from "@/store/assets";
+import { decodeUint8ArrayTx } from "@/utils/tx.utils";
 
 export interface IssueAssetParams {
   assetName: string;
@@ -118,12 +119,11 @@ export const useIssueAsset = () => {
     setIsSubmitting(true);
     try {
       const tickInfo = await fetchTickInfo();
-      const targetTick = tickInfo.tick + settings.tickOffset;
 
       const assetNameValue = valueOfAssetName(data.assetName);
       const unitOfMeasurementValue = formatUnitOfMeasurement(data.unitOfMeasurement);
 
-      const tx = await issueAsset(wallet.publicKey, fees.assetIssuanceFee, targetTick, {
+      const tx = await issueAsset(wallet.publicKey, fees.assetIssuanceFee, tickInfo.tick + settings.tickOffset, {
         assetName: assetNameValue,
         numberOfShares: BigInt(data.numberOfShares),
         unitOfMeasurement: unitOfMeasurementValue,
@@ -132,6 +132,9 @@ export const useIssueAsset = () => {
 
       const signedTx = await getSignedTx(tx);
       const res = await broadcastTx(signedTx.tx);
+      
+      const decodedTx = decodeUint8ArrayTx(signedTx.tx);
+      const targetTick = decodedTx.tick;
 
       const checker = async () => {
         const assets = await fetchOwnedAssets(wallet.publicKey);

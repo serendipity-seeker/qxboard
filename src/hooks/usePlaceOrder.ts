@@ -12,6 +12,7 @@ import toast from "react-hot-toast";
 import { useTxMonitor } from "@/store/txMonitor";
 import { fetchAssetAskOrders, fetchAssetBidOrders, fetchEntityTrades } from "@/services/api.service";
 import { refetchAtom } from "@/store/action";
+import { decodeUint8ArrayTx } from "@/utils/tx.utils";
 
 const usePlaceOrder = () => {
   const [showProgress, setShowProgress] = useState(false);
@@ -56,6 +57,9 @@ const usePlaceOrder = () => {
     const signedTx = await getSignedTx(transaction);
     const res = await broadcastTx(signedTx.tx);
 
+    const decodedTx = decodeUint8ArrayTx(signedTx.tx);
+    const targetTick = decodedTx.tick;
+
     if (res.transactionId) {
       toast.success("Transaction sent successfully");
     } else {
@@ -83,11 +87,15 @@ const usePlaceOrder = () => {
             return trades.some((trade) => trade.price === price && trade.taker === wallet?.publicKey);
           }
         case "rmBuy":
-          const rmAskOrders = await fetchAssetAskOrders(issuer, assetName);
-          return !rmAskOrders.some((order) => order.price === price && order.entityId === wallet?.publicKey);
+          {
+            const rmAskOrders = await fetchAssetAskOrders(issuer, assetName);
+            return !rmAskOrders.some((order) => order.price === price && order.entityId === wallet?.publicKey);
+          }
         case "rmSell":
-          const rmBidOrders = await fetchAssetBidOrders(issuer, assetName);
-          return !rmBidOrders.some((order) => order.price === price && order.entityId === wallet?.publicKey);
+          {
+            const rmBidOrders = await fetchAssetBidOrders(issuer, assetName);
+            return !rmBidOrders.some((order) => order.price === price && order.entityId === wallet?.publicKey);
+          }
         default:
           return false;
       }
@@ -114,7 +122,7 @@ const usePlaceOrder = () => {
       }
     };
 
-    startMonitoring(taskId, { checker, onSuccess, onFailure, targetTick: tickInfo?.tick + settings.tickOffset });
+    startMonitoring(taskId, { checker, onSuccess, onFailure, targetTick });
   };
 
   return { showProgress, setShowProgress, placeOrder };

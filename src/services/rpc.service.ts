@@ -109,7 +109,7 @@ export const fetchAssetOrders = async (
   issuerID: string,
   type: string,
   offset: number,
-): Promise<any> => {
+) => {
   const response = await fetch(
     `${API_URL}/v1/qx/getAsset${type}Orders?assetName=${assetName}&issuerId=${issuerID}&offset=${offset}`,
   );
@@ -117,7 +117,7 @@ export const fetchAssetOrders = async (
   return data;
 };
 
-export const fetchOwnedAssets = async (id: string, contractId = 1): Promise<any> => {
+export const fetchOwnedAssets = async (id: string, contractId = 1) => {
   try {
     const response = await fetch(`${API_URL}/v1/assets/${id}/owned`);
     const data = await response.json();

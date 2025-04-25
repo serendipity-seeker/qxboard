@@ -21,7 +21,7 @@ const useAPIFetcher = () => {
       );
       setAssets(
         assets.map((asset) => {
-          const matchingBalance = balance.filter((data: { asset: string; amount: string; issuerId: string; unitOfMeasurement: any }) => data.asset === asset.name)
+          const matchingBalance = balance.filter((data: { asset: string; amount: string; issuerId: string; unitOfMeasurement: string }) => data.asset === asset.name)
           return {
             ...asset,
             balance: matchingBalance?.[0]?.amount || 0

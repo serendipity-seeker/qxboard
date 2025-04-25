@@ -15,14 +15,12 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 
-interface OrderFormProps extends React.HTMLAttributes<HTMLDivElement> {}
-
 interface OrderFormData {
   price: number;
   quantity: number;
 }
 
-const OrderForm: React.FC<OrderFormProps> = ({ className, ...props }) => {
+const OrderForm: React.FC<React.HTMLAttributes<HTMLDivElement>> = ({ className, ...props }) => {
   const [action] = useAtom(actionAtom);
   const [balances] = useAtom(balancesAtom);
   const [orderType, setOrderType] = useState<"buy" | "sell">("buy");
@@ -84,8 +82,9 @@ const OrderForm: React.FC<OrderFormProps> = ({ className, ...props }) => {
         return false;
       }
     } else if (orderType === "sell") {
-      const assetBalance = await fetchOwnedAssets(wallet.publicKey || "");
-      if (assetBalance.get(action.curPair) < data.quantity) {
+      const assetBalance = await fetchOwnedAssets(wallet.publicKey || "") || [];
+      const assetBalanceData = assetBalance.find((asset: { asset: string; amount: string }) => asset.asset === action.curPair);
+      if (assetBalanceData?.amount < data.quantity) {
         toast.error("Insufficient asset balance");
         return false;
       }
@@ -106,16 +105,10 @@ const OrderForm: React.FC<OrderFormProps> = ({ className, ...props }) => {
           className="w-full"
         >
           <TabsList className="mb-2 grid w-full grid-cols-2">
-            <TabsTrigger
-              value="buy"
-              className={cn("data-[state=active]:bg-success-40 data-[state=active]:text-white")}
-            >
+            <TabsTrigger value="buy" className={cn("data-[state=active]:bg-success-40 data-[state=active]:text-white")}>
               Buy
             </TabsTrigger>
-            <TabsTrigger
-              value="sell"
-              className={cn("data-[state=active]:bg-error-40 data-[state=active]:text-white")}
-            >
+            <TabsTrigger value="sell" className={cn("data-[state=active]:bg-error-40 data-[state=active]:text-white")}>
               Sell
             </TabsTrigger>
           </TabsList>

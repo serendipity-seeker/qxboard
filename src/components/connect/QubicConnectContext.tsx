@@ -18,6 +18,7 @@ import { balancesAtom } from "@/store/balances";
 interface Wallet {
   connectType: string;
   publicKey: string;
+  alias?: string;
   privateKey?: string;
 }
 
@@ -30,7 +31,6 @@ interface QubicConnectContextType {
   toggleConnectModal: () => void;
   getMetaMaskPublicId: (accountIdx?: number, confirm?: boolean) => Promise<string>;
   getSignedTx: (tx: Uint8Array | QubicTransaction) => Promise<{ tx: Uint8Array }>;
-  wcConnect: () => Promise<void>;
   mmSnapConnect: () => Promise<void>;
   privateKeyConnect: (privateSeed: string) => Promise<void>;
   vaultFileConnect: (selectedFile: File, password: string) => Promise<QubicVault>;
@@ -46,7 +46,7 @@ export function QubicConnectProvider({ children }: QubicConnectProviderProps) {
   const [connected, setConnected] = useState<boolean>(false);
   const [wallet, setWallet] = useState<Wallet | null>(null);
   const [showConnectModal, setShowConnectModal] = useState<boolean>(false);
-  const { signTransaction, requestAccounts } = useWalletConnect();
+  const { signTransaction } = useWalletConnect();
   const [state, dispatch] = useContext(MetaMaskContext);
   const [, setBalances] = useAtom(balancesAtom);
 
@@ -187,19 +187,6 @@ export function QubicConnectProvider({ children }: QubicConnectProviderProps) {
     }
   };
 
-  const wcConnect = async () => {
-    try {
-      const accounts = await requestAccounts();
-      const wallet = {
-        connectType: "walletconnect",
-        publicKey: accounts[0].address,
-      };
-      connect(wallet);
-    } catch (error) {
-      console.error("Failed to connect with WalletConnect:", error);
-    }
-  };
-
   const privateKeyConnect = async (privateSeed: string) => {
     const idPackage = await new QubicHelper().createIdPackage(privateSeed);
     connect({
@@ -252,7 +239,6 @@ export function QubicConnectProvider({ children }: QubicConnectProviderProps) {
     toggleConnectModal,
     getMetaMaskPublicId,
     getSignedTx,
-    wcConnect,
     mmSnapConnect,
     privateKeyConnect,
     vaultFileConnect,

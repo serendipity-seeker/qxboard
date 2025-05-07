@@ -8,8 +8,13 @@ export interface OwnedAsset {
   data: {
     issuedAsset: {
       name: string;
+      issuerIdentity: string;
+      numberOfDecimalPlaces: number;
+      type: number;
+      unitOfMeasurement: number[];
     };
     numberOfUnits: number;
+    managingContractIndex: number;
   };
 }
 

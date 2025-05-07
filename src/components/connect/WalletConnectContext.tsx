@@ -50,7 +50,7 @@ export function WalletConnectProvider({ children }: WalletConnectProviderProps) 
               "qubic_signTransaction",
               "qubic_sign",
             ],
-            events: ["amountChanged", "tokenAmountChanged", "accountsChanged"],
+            events: ["amountChanged", "assetAmountChanged", "accountsChanged"],
           },
         },
       });
@@ -150,7 +150,11 @@ export function WalletConnectProvider({ children }: WalletConnectProviderProps) 
         request: {
           method: "qubic_signTransaction",
           params: {
-            ...params,
+            from: params.from,
+            to: params.to,
+            amount: params.amount,
+            inputType: params.inputType,
+            payload: params.payload,
             nonce: Date.now().toString(),
           },
         },
@@ -176,11 +180,11 @@ export function WalletConnectProvider({ children }: WalletConnectProviderProps) 
 
   useEffect(() => {
     SignClient.init({
-      projectId: "b2ace378845f0e4806ef23d2732f77a4",
+      projectId: "2697d842a392d20a355416a260f58276",
       metadata: {
-        name: "QEARN DAPP",
-        description: "QEARN DAPP",
-        url: "https://qearn.qubic.org",
+        name: "QXBoard",
+        description: "QXBoard",
+        url: "https://www.qxboard.com",
         icons: ["https://walletconnect.com/walletconnect-logo.png"],
       },
     }).then((client) => {

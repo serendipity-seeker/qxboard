@@ -5,7 +5,7 @@ import WalletConnectLogo from "@/assets/wallet-connect.svg";
 import { generateQRCode } from "@/utils/index.ts";
 import { QubicVault } from "@qubic-lib/qubic-ts-vault-library/src/vault";
 import { AnimatePresence, motion } from "framer-motion";
-import { AlertTriangle } from "lucide-react";
+// import { AlertTriangle } from "lucide-react";
 import { useContext, useEffect, useState } from "react";
 import { IoClose } from "react-icons/io5";
 import { Button } from "../ui/button";
@@ -179,7 +179,7 @@ const ConnectModal = ({ open, onClose, darkMode }: { open: boolean; onClose: () 
                           <img src={WalletConnectLogo} alt="Wallet Connect Logo" className="h-8 w-8" />
                           <span className="w-32">Wallet Connect</span>
                         </Button>
-                        <div className="my-2 flex w-full items-center justify-center">
+                        {/* <div className="my-2 flex w-full items-center justify-center">
                           <div className="flex-grow border-t border-gray-300"></div>
                           <span className="px-4 text-red-500">
                             <AlertTriangle className="mr-2 inline-block" /> BE CAREFUL!
@@ -191,7 +191,7 @@ const ConnectModal = ({ open, onClose, darkMode }: { open: boolean; onClose: () 
                         </Button>
                         <Button variant="default" onClick={() => setSelectedMode("vault-file")}>
                           Vault File
-                        </Button>
+                        </Button> */}
                       </>
                     )}
                   </motion.div>

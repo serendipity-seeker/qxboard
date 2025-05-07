@@ -58,7 +58,7 @@ export const decodeUint8ArrayTx = (tx: Uint8Array) => {
 };
 
 interface ICreatePayload {
-  data: number | Uint8Array;
+  data: number | bigint | Uint8Array;
   type: "uint8" | "uint16" | "uint32" | "bigint64" | "id";
 }
 

@@ -57,13 +57,16 @@ export const fetchQuerySC = async (query: IQuerySC): Promise<IQuerySCResponse> =
   return result;
 };
 
-export const fetchTxStatus = async (txId: string): Promise<TxStatus> => {
+export const fetchTxStatus = async (txId: string): Promise<boolean> => {
   const txStatusResult = await fetch(`${RPC_URL}/v1/tx-status/${txId}`);
   let txStatus = {} as { transactionStatus: TxStatus };
   if (txStatusResult.status == 200) {
     txStatus = await txStatusResult.json();
   }
-  return txStatus.transactionStatus;
+  if (txStatus.transactionStatus) {
+    return true;
+  }
+  return false;
 };
 
 export const fetchLatestStats = async (): Promise<LatestStats> => {
@@ -106,7 +109,7 @@ export const fetchAssetOrders = async (
   issuerID: string,
   type: string,
   offset: number,
-): Promise<any> => {
+) => {
   const response = await fetch(
     `${API_URL}/v1/qx/getAsset${type}Orders?assetName=${assetName}&issuerId=${issuerID}&offset=${offset}`,
   );
@@ -114,11 +117,20 @@ export const fetchAssetOrders = async (
   return data;
 };
 
-export const fetchOwnedAssets = async (id: string): Promise<any> => {
+export const fetchOwnedAssets = async (id: string, contractId = 1) => {
   try {
     const response = await fetch(`${API_URL}/v1/assets/${id}/owned`);
     const data = await response.json();
-    return new Map(data.ownedAssets.map((el: OwnedAsset) => [el.data.issuedAsset.name, el.data.numberOfUnits]));
+    return data.ownedAssets
+      .filter((el: OwnedAsset) => el.data.managingContractIndex === contractId)
+      .map((el: OwnedAsset) => {
+        return {
+          asset: el.data.issuedAsset.name,
+          amount: el.data.numberOfUnits,
+          issuerId: el.data.issuedAsset.issuerIdentity,
+          unitOfMeasurement: el.data.issuedAsset.unitOfMeasurement,
+        };
+      });
   } catch (error) {
     console.error("Error fetching owned assets:", error);
   }
